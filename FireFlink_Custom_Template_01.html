@@ -1,0 +1,3753 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>FireFlink HTML Report</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      /* FireFlink Brand Colors - Enhanced */
+      --primary:#6424b8;
+      --primary-light:#8b4fd9;
+      --primary-dark:#4a1990;
+      --primary-glow:rgba(100,36,184,0.15);
+      --accent:#18C6D1;
+      --accent-light:#3dd9e3;
+      --accent-glow:rgba(24,198,209,0.12);
+      
+      /* Refined Background Palette */
+      --bg-primary:#0f172a;
+      --bg-secondary:#1e293b;
+      --bg-card:#ffffff;
+      --bg-elevated:#f8fafc;
+      --bg-hover:#f1f5f9;
+      
+      /* Text Colors */
+      --text-primary:#0f172a;
+      --text-secondary:#475569;
+      --text-muted:#94a3b8;
+      --text-inverse:#ffffff;
+      
+      /* Status Colors - Refined */
+      --pass:#10b981;
+      --pass-light:#d1fae5;
+      --pass-dark:#059669;
+      --fail:#ef4444;
+      --fail-light:#fee2e2;
+      --fail-dark:#dc2626;
+      --warn:#f59e0b;
+      --warn-light:#fef3c7;
+      --warn-dark:#d97706;
+      --skip:#94a3b8;
+      --skip-light:#e2e8f0;
+      --skip-dark:#64748b;
+      
+      /* Border & Shadow */
+      --border-light:#e2e8f0;
+      --border-medium:#cbd5e1;
+      --shadow-sm:0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg:0 10px 30px rgba(0,0,0,0.1);
+      --shadow-xl:0 20px 50px rgba(0,0,0,0.15);
+      --shadow-glow:0 0 30px var(--primary-glow);
+      
+      /* Radius */
+      --radius-sm:8px;
+      --radius-md:12px;
+      --radius-lg:16px;
+      --radius-xl:20px;
+    }
+    
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+    
+    html,body{
+      height:100%;
+      overflow-x:hidden;
+    }
+    
+    body{
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+      background:linear-gradient(135deg, #a78bfa 0%, #c084fc 25%, #d8b4fe 50%, #e9d5ff 75%, #f3e8ff 100%);
+      color:var(--text-primary);
+      padding:20px;
+      position:relative;
+      min-height:100vh;
+      animation:gradientShift 15s ease infinite;
+      background-size:200% 200%;
+    }
+    
+    /* Transparent FireFlink Watermark */
+    body::after{
+      content:'';
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      width:500px;
+      height:500px;
+      background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyMiAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNOC4zMDgxNSAyLjQ0NTg2QzguMDAxMjkgMi42MzQxMSA3Ljc1NTYyIDIuNzUyNzIgNy41MDkgMi44NzYwMkM2LjU4NzQ4IDMuMzY3MzcgNS43MjcyIDMuNzk3NTQgNC44MDU2OCA0LjI4Nzk1QzQuNzQxNjcgNC4zMjQzMSA0LjY4OTY2IDQuMzc4NjMgNC42NTYyIDQuNDQ0MjFDNC42MjI3NCA0LjUwOTggNC42MDkyMyA0LjU4Mzc2IDQuNjE3MzYgNC42NTY5M1YyMy4yNzU1QzQuNjE3MzYgMjMuNTIxMiA0LjU1NjI0IDIzLjcwNTcgNC4zMTA1NyAyMy43NjY5QzMuODU0NjQgMjMuOTU1MiAzLjM2MDA5IDI0LjAzMTIgMi44Njg2NiAyMy45ODg0QzIuMzc3MjIgMjMuOTQ1NyAxLjkwMzI4IDIzLjc4NTQgMS40ODY3MiAyMy41MjEyQzEuMTgwNDYgMjMuMzA1OSAwLjkxOTY5MiAyMy4wMzIzIDAuNzE5NCAyMi43MTZDMC41MTkxMDggMjIuMzk5NyAwLjM4MzI0NSAyMi4wNDcgMC4zMTk1MzkgMjEuNjc4MkMwLjE2NTA5IDIwLjY4MiAwLjEwMjAwNiAxOS42NzM3IDAuMTMxMjEzIDE4LjY2NkMwLjA3MDAyOTggMTMuNzQ5NyAwLjAwODg0MTg0IDguNzczMTUgMC4wMDg4NDE4NCAzLjg1NjgzQy0wLjAzOTE0NDEgMy4wNzUxMSAwLjEwODc0MSAyLjI5Mzc5IDAuNDM5MDM4IDEuNTgzNjZDMC43MTcyMjQgMC45OTAxNjEgMS4xOTgxNiAwLjUxNTQ3OCAxLjc5NTIzIDAuMjQ1MDY3QzIuMzkyMzEgLTAuMDI1MzQyOSAzLjA2NjI3IC0wLjA3MzczMDMgMy42OTU4NCAwLjEwODY0OUM0LjU2OTI4IDAuMzcxNDQ0IDUuMzk3OTggMC43NjQ5ODcgNi4xNTM2MSAxLjI3NTg2QzYuODI5NDUgMS42NDQ4NCA3LjUwNTI4IDIuMDEyODcgOC4xMTk5NCAyLjM4MTg2QzguMTg1ODMgMi4zMjI1NSA4LjI0Njk3IDIuMzgzNzMgOC4zMDgxNSAyLjQ0NTg2WiIgZmlsbD0iIzY0MjRiOCIgb3BhY2l0eT0iMC4wNSIvPjxwYXRoIGQ9Ik04LjQyNTg3IDIxLjM3MjNWMTYuMDI1OEM4LjQyNDQyIDE1Ljk1MzYgOC40NDA4MyAxNS44ODIxIDguNDczNjcgMTUuODE3N0M4LjUwNjUxIDE1Ljc1MzMgOC41NTQ3MyAxNS42OTgxIDguNjE0MDggMTUuNjU2OUMxMC43MDM3IDE0LjQ4ODcgMTIuNzkzNCAxMy4zMjE1IDE0LjgyMDkgMTIuMTU0M0MxNS4zNzM0IDExLjg0NjUgMTUuOTI2OSAxMS41Mzk3IDE2LjU0MDYgMTEuMTcwN0MxNi4xODU0IDEwLjk0MjUgMTUuODE1OSAxMC43MzcyIDE1LjQzNDYgMTAuNTU2QzE0LjUxMzEgMTAuMDAyNiAxMy41OTE3IDkuNTExMjMgMTIuNjcwMSA4Ljk1NTg3QzEyLjYyNDcgOC45MjUwMyAxMi41NzExIDguOTA4NTMgMTIuNTE2MiA4LjkwODUzQzEyLjQ2MTMgOC45MDg1MyAxMi40MDc3IDguOTI1MDMgMTIuMzYyMyA4Ljk1NTg3QzExLjE5NTEgOS42OTI5IDEwLjA4OTEgMTAuMzY3OCA4LjkyMDk4IDExLjEwNjdDOC44NTk4IDExLjEwNjcgOC44NTk4MiAxMS4xNjc5IDguNzk3NjkgMTEuMTY3OVY3LjIzNTJDOC43OTU5NCA3LjE1NDEzIDguODExODMgNy4wNzM2NSA4Ljg0NDM0IDYuOTk5MzdDOC44NzY4NiA2LjkyNTA4IDguOTI1MTYgNi44NTg3NiA4Ljk4NTkgNi44MDUwNEMxMC4wMzA3IDYuMDY4MDEgMTEuMDc0NiA1LjM5MzExIDEyLjA1ODMgNC42NTQyQzEyLjExNDkgNC42MjM5NiAxMi4xNzgxIDQuNjA4MTUgMTIuMjQyMiA0LjYwODE1QzEyLjMwNjQgNC42MDgxNSAxMi4zNjk3IDQuNjIzOTYgMTIuNDI2MyA0LjY1NDJDMTMuODM4MiA1LjQ1MzM1IDE1LjMxNDEgNi4zMTM2OCAxNi43Mjc5IDcuMTExODhDMTcuNzEwNiA3LjY2NDQyIDE4LjY5NDMgOC4yMTc4OSAxOS43NDAxIDguNzcwNDJDMjAuNDg4IDkuMTU5ODEgMjEuMTA3MiA5Ljc1NzQzIDIxLjUyMjggMTAuNDkxMUMyMS43ODQ2IDEwLjk2ODUgMjEuODg5OCAxMS41MTYxIDIxLjgyMzYgMTIuMDU2NkMyMS43NTc0IDEyLjU5NzEgMjEuNTIzMiAxMy4xMDMxIDIxLjE1MzkgMTMuNTAzMkMyMC42NjgyIDE0LjA1NTYgMjAuMDg0OSAxNC41MTM4IDE5LjQzMzIgMTQuODU0OUMxOC4wMjEzIDE1LjY1NCAxNi42Njc3IDE2LjUxNDQgMTUuMjU0OSAxNy4zMTI2QzEzLjQ3MyAxOC4zNTc0IDExLjc1MjQgMTkuMzQwMSA5Ljk3MDUxIDIwLjM4NDlDOS40MDk1IDIwLjc1NzcgOC45MTcyMiAyMS4wNjA3IDguNDI1ODcgMjEuMzcyM1oiIGZpbGw9IiM2NDI0YjgiIG9wYWNpdHk9IjAuMDUiLz48L3N2Zz4=');
+      background-repeat:no-repeat;
+      background-position:center;
+      background-size:contain;
+      opacity:0.03;
+      pointer-events:none;
+      z-index:0;
+      animation:watermarkFloat 20s ease-in-out infinite;
+    }
+    
+    @keyframes watermarkFloat{
+      0%, 100%{transform:translate(-50%, -50%) rotate(0deg) scale(1);}
+      25%{transform:translate(-48%, -52%) rotate(2deg) scale(1.05);}
+      50%{transform:translate(-52%, -50%) rotate(-2deg) scale(0.95);}
+      75%{transform:translate(-50%, -48%) rotate(1deg) scale(1.02);}
+    }
+    
+    @keyframes gradientShift{
+      0%{background-position:0% 50%;}
+      50%{background-position:100% 50%;}
+      100%{background-position:0% 50%;}
+    }
+    
+    body::before{
+      content:'';
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(168,85,247,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(192,132,252,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(216,180,254,0.1) 0%, transparent 70%);
+      pointer-events:none;
+      z-index:0;
+      animation:floatingBubbles 20s ease-in-out infinite;
+    }
+    
+    @keyframes floatingBubbles{
+      0%, 100%{transform:translateY(0) scale(1);}
+      50%{transform:translateY(-20px) scale(1.05);}
+    }
+
+    /* Header - Modern Glassmorphism */
+.header{
+  position: relative;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  /* 🔹 MOVE HEADER TO THE RIGHT */
+  margin-left: 20px;          /* adjust: 12px | 16px | 24px */
+  margin-right: 0;
+  margin-bottom: 24px;
+
+  padding: 20px 28px;
+  border-radius: var(--radius-xl);
+
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+
+  border: 3px solid rgba(168,85,247,0.3);
+
+  box-shadow:
+    var(--shadow-xl),
+    0 0 0 1px rgba(100,36,184,0.1);
+
+  animation: fadeInDown 0.6s ease-out;
+}
+
+    
+    @keyframes fadeInDown{
+      from{
+        opacity:0;
+        transform:translateY(-30px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+    
+    @keyframes fadeInUp{
+      from{
+        opacity:0;
+        transform:translateY(30px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+    
+    @keyframes fadeInLeft{
+      from{
+        opacity:0;
+        transform:translateX(-30px);
+      }
+      to{
+        opacity:1;
+        transform:translateX(0);
+      }
+    }
+    
+    @keyframes fadeInRight{
+      from{
+        opacity:0;
+        transform:translateX(30px);
+      }
+      to{
+        opacity:1;
+        transform:translateX(0);
+      }
+    }
+    
+    @keyframes scaleIn{
+      from{
+        opacity:0;
+        transform:scale(0.9);
+      }
+      to{
+        opacity:1;
+        transform:scale(1);
+      }
+    }
+    
+    .logo{
+      width:58px;
+      height:58px;
+      border-radius:var(--radius-lg);
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 20px rgba(113, 52, 123,0.3);
+      position:relative;
+      overflow:visible;
+      padding:8px;
+      flex-shrink:0;
+      animation:scaleIn 0.5s ease-out, logoPulse 3s ease-in-out infinite;
+      transition:all 0.3s ease;
+    }
+    
+    @keyframes logoPulse{
+      0%, 100%{box-shadow:0 8px 20px rgba(113, 52, 123,0.3);}
+      50%{box-shadow:0 8px 25px rgba(113, 52, 123,0.5);}
+    }
+    
+    .logo:hover{
+      transform:scale(1.1) rotate(5deg);
+      box-shadow:0 12px 30px rgba(100,36,184,0.5);
+      animation:none;
+    }
+    
+    .logo svg{
+      width:100%;
+      height:100%;
+      display:block;
+      transition:all 0.3s ease;
+    }
+    
+    .logo:hover svg{
+      filter:drop-shadow(0 0 10px rgba(100,36,184,0.6));
+    }
+    
+    .logo img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      position:relative;
+      z-index:2;
+      display:block;
+    }
+    
+    .logo::before{
+      content:'';
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:linear-gradient(45deg, transparent, rgba(100,36,184,0.03), transparent);
+      animation:shine 3s infinite;
+      pointer-events:none;
+      z-index:1;
+    }
+    
+    @keyframes shine{
+      0%{transform:translateX(-100%) translateY(-100%) rotate(45deg);}
+      100%{transform:translateX(100%) translateY(100%) rotate(45deg);}
+    }
+    
+    .title{
+      font-size:44px;
+      font-weight:800;
+      background:linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      letter-spacing:-0.5px;
+      margin-bottom:4px;
+    }
+    
+    .subtitle{
+      font-size:13px;
+      color:var(--text-secondary);
+      font-weight:500;
+      letter-spacing:0.3px;
+    }
+    
+    .controls{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .title{font-weight:800;font-size:18px;}
+    .subtitle{font-size:13px;color:var(--muted);margin-top:2px;}
+    .controls{margin-left:auto;display:flex;gap:8px;align-items:center;}
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:13px;
+      font-weight:600;
+      cursor:pointer;
+      background:var(--primary);
+      color:#fff;
+      box-shadow:0 8px 24px rgba(100,36,184,0.25);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position:relative;
+      overflow:hidden;
+    }
+    
+    .btn::before{
+      content:'';
+      position:absolute;
+      top:50%;
+      left:50%;
+      width:0;
+      height:0;
+      border-radius:50%;
+      background:rgba(255,255,255,0.3);
+      transform:translate(-50%, -50%);
+      transition:width 0.6s, height 0.6s;
+    }
+    
+    .btn:hover::before{
+      width:300px;
+      height:300px;
+    }
+    
+    .btn:hover{
+      transform:translateY(-2px) scale(1.05);
+      box-shadow:0 12px 32px rgba(100,36,184,0.35);
+    }
+    
+    .btn:active{
+      transform:translateY(0) scale(0.98);
+    }
+    .btn.secondary{
+      background:#fff;
+      color:var(--primary-dark);
+      border:1px solid rgba(100,36,184,0.16);
+      box-shadow:none;
+    }
+    .btn.icon-only{
+      padding:6px 8px;
+      border-radius:10px;
+      font-size:12px;
+    }
+    .id-input{
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:6px 12px;
+      font-size:12px;
+      width:140px;
+      outline:none;
+      transition:all 0.2s ease;
+    }
+    .id-input:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 2px rgba(100,36,184,0.15);
+    }
+    .id-input.report-name{
+      width:200px;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      background:linear-gradient(135deg, rgba(100,36,184,0.95) 0%, rgba(139,79,217,0.95) 100%);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:99999;
+      backdrop-filter:blur(10px);
+    }
+    .loading-overlay.show{
+      display:flex;
+    }
+    .loading-card{
+      background:white;
+      border-radius:24px;
+      padding:48px 64px;
+      box-shadow:0 30px 80px rgba(0,0,0,0.4);
+      text-align:center;
+      min-width:360px;
+      animation:slideIn 0.3s ease;
+    }
+    @keyframes slideIn{
+      from{
+        opacity:0;
+        transform:translateY(-20px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+    
+    /* FireFlink Logo in Loading */
+    .loading-logo{
+      width:100px;
+      height:100px;
+      margin:0 auto 32px;
+      animation:logoFloat 2s ease-in-out infinite;
+      position:relative;
+    }
+    .loading-logo svg{
+      width:100%;
+      height:100%;
+      filter:drop-shadow(0 10px 30px rgba(113, 52, 123,0.3));
+    }
+    @keyframes logoFloat{
+      0%, 100%{transform:translateY(0px);}
+      50%{transform:translateY(-10px);}
+    }
+    
+    .loading-spinner{
+      width:80px;
+      height:80px;
+      margin:0 auto 24px;
+      border:6px solid #f3f4f6;
+      border-top:6px solid var(--primary);
+      border-radius:50%;
+      animation:spin 1s linear infinite;
+    }
+    @keyframes spin{
+      0%{transform:rotate(0deg);}
+      100%{transform:rotate(360deg);}
+    }
+    .loading-text{
+      font-size:20px;
+      font-weight:700;
+      color:#111827;
+      margin-bottom:8px;
+    }
+    .loading-percentage{
+      font-size:42px;
+      font-weight:900;
+      background:linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:12px;
+    }
+    .loading-subtext{
+      font-size:14px;
+      color:var(--muted);
+    }
+    .progress-bar-container{
+      width:100%;
+      height:8px;
+      background:#f3f4f6;
+      border-radius:4px;
+      overflow:hidden;
+      margin-top:20px;
+    }
+    .progress-bar{
+      height:100%;
+      background:linear-gradient(90deg, var(--primary), var(--accent));
+      transition:width 0.3s ease;
+      border-radius:4px;
+    }
+
+    /* Execution row */
+    .exec-row{
+      display:flex;
+      gap:16px;
+      margin-top:18px;
+      overflow-x:auto;
+      padding:20px;
+      background:rgba(250,245,255,0.4);
+      backdrop-filter:blur(8px);
+      border-radius:var(--radius-xl);
+      box-shadow:inset 0 2px 10px rgba(168,85,247,0.05);
+    }
+    .exec-wrap{
+      flex:0 0 auto;
+      width:30vw;
+      min-width:320px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .exec-wrap.expanded{
+      width:45vw;
+      min-width:420px;
+    }
+    .exec-card{
+      background:var(--card);
+      border-radius:16px;
+      padding:16px 18px;
+      border:3px solid rgba(168,85,247,0.25);
+      box-shadow:
+        0 10px 30px rgba(100,36,184,0.08),
+        0 0 0 1px rgba(168,85,247,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      transition:all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position:relative;
+      overflow:hidden;
+      animation:fadeInUp 0.6s ease-out backwards;
+    }
+    
+    /* Staggered animation delays for cards */
+    .exec-card:nth-child(1){animation-delay:0.1s;}
+    .exec-card:nth-child(2){animation-delay:0.2s;}
+    .exec-card:nth-child(3){animation-delay:0.3s;}
+    .exec-card:nth-child(4){animation-delay:0.4s;}
+    .exec-card:nth-child(5){animation-delay:0.5s;}
+    .exec-card:nth-child(6){animation-delay:0.6s;}
+    .exec-card:nth-child(n+7){animation-delay:0.7s;}
+    
+    .exec-card::before{
+      content:'';
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:3px;
+      background:linear-gradient(90deg, #6424b8 0%, #8b4fd9 50%, #a78bfa 100%);
+      opacity:0;
+      transition:opacity 0.3s ease;
+    }
+    
+    .exec-card:hover::before{
+      opacity:1;
+    }
+    
+    .exec-card:hover{
+      border-color:rgba(100,36,184,0.4);
+      box-shadow:
+        0 15px 40px rgba(100,36,184,0.12),
+        0 0 0 1px rgba(100,36,184,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+      transform:translateY(-2px);
+    }
+    
+    .exec-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+    
+    .exec-left{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex:1;
+      min-width:0;
+    }
+    
+    .browser-icon{
+      width:48px;
+      height:48px;
+      border-radius:12px;
+      background:radial-gradient(circle at 30% 0,#fff 0,#e5e7eb 40%,#d1d5db 100%);
+      display:grid;
+      place-items:center;
+      font-size:24px;
+      overflow:hidden;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+      flex-shrink:0;
+    }
+    .browser-icon.chrome{
+      background:linear-gradient(135deg, #ffffff 0%, #fff2ce 25%, #d6ffeb 50%, #cadfff 100%);
+    }
+    .browser-icon.firefox{
+      background:linear-gradient(135deg, #dfac91 0%, #fce2bf 100%);
+    }
+    .browser-icon.edge{
+      background:linear-gradient(135deg, #c4e0f7 0%, #b8e9f7 100%);
+    }
+    .browser-icon.safari{
+      background:linear-gradient(135deg, #b8d3fa 0%, #c3e8f5 100%);
+    }
+    
+    .browser-img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:12px;
+      display:block;
+    }
+
+    .exec-info{
+      flex:1;
+      min-width:0;
+    }
+    
+    .exec-name{
+      font-weight:700;
+      font-size:15px;
+      color:#0f172a;
+      margin-bottom:4px;
+      letter-spacing:-0.01em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    
+    .exec-sub{
+      font-size:12px;
+      color:#64748b;
+      font-weight:500;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    
+    .exec-date{
+      font-size:11px;
+      color:#94a3b8;
+      margin-top:2px;
+      font-weight:500;
+      white-space:nowrap;
+    }
+    
+    /* Optimized Stats Section */
+    .exec-stats-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 0;
+      border-top:2px solid rgba(168,85,247,0.1);
+      border-bottom:2px solid rgba(168,85,247,0.1);
+    }
+    
+    .scripts-pill{
+      padding:6px 12px;
+      border-radius:10px;
+      background:linear-gradient(135deg, rgba(100,36,184,0.08) 0%, rgba(168,85,247,0.08) 100%);
+      border:2px solid rgba(100,36,184,0.15);
+      font-size:13px;
+      font-weight:700;
+      color:#6424b8;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      white-space:nowrap;
+    }
+    
+    .scripts-pill::before{
+      content:'📊';
+      font-size:14px;
+    }
+    
+    .pie-wrap{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    
+    .pie-container{
+      position:relative;
+      flex-shrink:0;
+    }
+    
+    .pie{
+      width:90px;
+      height:90px;
+      border-radius:999px;
+      box-shadow:0 4px 12px rgba(100,36,184,0.12);
+      position:relative;
+    }
+    
+    /* Pie center text for total count */
+    .pie-center{
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      text-align:center;
+      pointer-events:none;
+      z-index:10;
+    }
+    
+    .pie-center-number{
+      font-size:20px;
+      font-weight:800;
+      color:#0f172a;
+      line-height:1;
+      display:block;
+    }
+    
+    .pie-center-label{
+      font-size:9px;
+      font-weight:600;
+      color:#64748b;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+      margin-top:2px;
+      display:block;
+    }
+    
+    /* Pie Chart Animations */
+    .pie-animated{
+      animation:pieRotate 1.2s ease-out;
+    }
+    @keyframes pieRotate{
+      0%{transform:rotate(-90deg) scale(0.9);opacity:0;}
+      100%{transform:rotate(0deg) scale(1);opacity:1;}
+    }
+    .pie-segment{
+      animation:segmentFadeIn 0.5s ease-out both;
+      transform-origin:center;
+      transition:opacity 0.3s ease;
+    }
+    @keyframes segmentFadeIn{
+      0%{opacity:0;transform:scale(0.9);}
+      100%{opacity:1;transform:scale(1);}
+    }
+    .pie:hover{
+      transform:scale(1.05);
+      transition:transform 0.3s ease;
+    }
+    .pie:hover .pie-segment{
+      opacity:0.9;
+    }
+    
+    /* Compact Pie Legend */
+    .pie-legend{
+      font-size:12px;
+      line-height:1.6;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:140px;
+    }
+    .legend-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:4px 8px;
+      cursor:pointer;
+      transition:all 0.2s ease;
+      border-radius:6px;
+      background:transparent;
+    }
+    .legend-row:hover{
+      background:rgba(168,85,247,0.08);
+      transform:translateX(2px);
+    }
+    .legend-row span:first-child{
+      font-weight:600;
+      font-size:12px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      white-space:nowrap;
+    }
+    .legend-row span:first-child::before{
+      content:'';
+      width:10px;
+      height:10px;
+      border-radius:2px;
+      display:inline-block;
+      flex-shrink:0;
+    }
+    .legend-pass span:first-child::before{background:var(--pass);}
+    .legend-fail span:first-child::before{background:var(--fail);}
+    .legend-warn span:first-child::before{background:var(--warn);}
+    .legend-skip span:first-child::before{background:var(--skip);}
+    .legend-terminated span:first-child::before{background:#6b7280;}
+    
+    .legend-row span:last-child{
+      font-weight:700;
+      font-family:'Inter',ui-monospace,monospace;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    .legend-pass{color:var(--pass);}
+    .legend-fail{color:var(--fail);}
+    .legend-warn{color:var(--warn);}
+    .legend-skip{color:var(--skip);}
+    .legend-terminated{color:#6b7280;}
+    .exec-footer{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:12px;
+      color:#64748b;
+      margin-top:4px;
+      gap:12px;
+      font-weight:500;
+      flex-wrap:wrap;
+    }
+    .exec-footer .strong{
+      font-weight:700;
+      color:#0f172a;
+    }
+    .exec-footer .pe-var-badge{
+      display:inline-flex;
+      align-items:center;
+      background:linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+      color:white;
+      padding:4px 10px;
+      border-radius:8px;
+      font-weight:700;
+      font-size:11px;
+      margin-left:6px;
+      box-shadow:0 2px 8px rgba(139,92,246,0.25);
+      transition:all 0.3s ease;
+      white-space:nowrap;
+    }
+    .exec-footer .pe-var-badge:hover{
+      transform:translateY(-1px);
+      box-shadow:0 4px 12px rgba(139,92,246,0.35);
+    }
+    .exec-footer-middle{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    /* Execution Meta Details */
+    .exec-meta-details{
+      margin-top:12px;
+      padding:12px;
+      background:linear-gradient(135deg, rgba(168,85,247,0.04) 0%, rgba(192,132,252,0.04) 100%);
+      border-radius:12px;
+      border:1px solid rgba(168,85,247,0.1);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .meta-item{
+      display:flex;
+      gap:8px;
+      font-size:11px;
+      align-items:flex-start;
+    }
+    .meta-label{
+      font-weight:600;
+      color:#6424b8;
+      min-width:140px;
+      display:flex;
+      align-items:center;
+      gap:4px;
+    }
+    .meta-value{
+      color:#0f172a;
+      font-weight:500;
+      line-height:1.5;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .platform-badge{
+      display:inline-flex;
+      align-items:center;
+      padding:3px 10px;
+      background:linear-gradient(135deg, #6424b8 0%, #8b4fd9 100%);
+      color:white;
+      font-size:10px;
+      font-weight:700;
+      border-radius:12px;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+      box-shadow:0 2px 6px rgba(100,36,184,0.3);
+    }
+
+    /* Modules container */
+    .modules-card{
+      background:var(--card);
+      border-radius:18px;
+      padding:12px 14px 10px;
+      border:1px solid rgba(148,163,184,0.35);
+      box-shadow:0 10px 26px rgba(15,23,42,0.05);
+    }
+
+    /* NEW: hide modules when execution is not expanded (used for preview filter) */
+    .exec-wrap:not(.expanded) .modules-card{
+      display:none;
+    }
+
+    .modules-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      font-size:13px;
+      margin-bottom:4px;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .modules-header strong{font-weight:600;}
+    .modules-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:6px;
+    }
+    .module-block{
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#f9fafb;
+      padding:8px 10px;
+    }
+    .module-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:12px;
+      margin-bottom:4px;
+      gap:8px;
+    }
+    .module-head .name{font-weight:600;color:#111827;}
+
+    .section-label{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:0.04em;
+      margin-top:4px;
+      margin-bottom:2px;
+    }
+    .tc-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:4px 0;
+      font-size:12px;
+      cursor:pointer;
+      transition:background .18s ease,border-left .18s ease,transform .16s ease;
+    }
+    .tc-row + .tc-row{
+      border-top:1px dashed rgba(148,163,184,0.5);
+    }
+    .tc-main{
+      max-width:70%;
+    }
+    .tc-name{font-weight:500;color:#111827;}
+    .tc-meta{color:var(--muted);font-size:11px;}
+    .status-badge{
+      padding:2px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:600;
+      text-transform:capitalize;
+    }
+    .status-pass{background:rgba(22,163,74,0.1);color:var(--pass);}
+    .status-fail{background:rgba(239,68,68,0.1);color:var(--fail);}
+    .status-warn{background:rgba(245,158,11,0.12);color:var(--warn);}
+    .status-skip{background:rgba(148,163,184,0.18);color:var(--skip);}
+
+    /* Darker highlight for selected test case */
+    .tc-row:hover,
+    .tc-row.active{
+      background:#e0e7ff;
+      border-left:4px solid var(--primary-dark);
+      padding-left:6px;
+      font-weight:600;
+    }
+
+    /* Filters */
+    .module-filter{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--primary);
+      font-size:12px;
+      font-weight:600;
+      background:#fff;
+      color:#111827;
+      cursor:pointer;
+      min-width:140px;
+    }
+    .status-filter{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin:4px 0 6px;
+    }
+    .sf-btn{
+      border:none;
+      padding:3px 9px;
+      background:#e5e7eb;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:600;
+      cursor:pointer;
+      color:#111827;
+    }
+    .sf-btn.active{
+      background:var(--primary);
+      color:#fff;
+    }
+
+    /* Overlay + panels */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,0.16);
+      display:none;
+      z-index:40;
+    }
+    .overlay.show{display:block;}
+    .steps-panel,
+    .step-detail{
+      position:fixed;
+      top:0;right:0;
+      height:100vh;
+      width:50vw;
+      min-width:600px;
+      max-width:900px;
+      background:linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+      box-shadow:-8px 0 40px rgba(100, 36, 184, 0.15);
+      display:flex;
+      flex-direction:column;
+      transform:translateX(100%);
+      transition:transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index:50;
+      overflow:hidden;
+    }
+    .steps-panel.show,
+    .step-detail.show{
+      transform:translateX(0);
+      animation:slideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Enhanced Panel Header */
+    .panel-header{
+      background:linear-gradient(135deg, #71347B 0%, #ba5ac9 100%);
+      color:#fff;
+      padding:20px 32px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      position:relative;
+      box-shadow:0 4px 20px rgba(100, 36, 184, 0.2);
+      animation:fadeInDown 0.5s ease;
+      min-height:100px;
+    }
+    
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .panel-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(255,255,255,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .panel-header-left{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      position:relative;
+      z-index:1;
+    }
+    
+    .fireflink-logo{
+      width:48px;
+      height:48px;
+      border-radius:8px;
+      background:rgba(113, 52, 123, 0.95);
+      padding:8px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.15);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+    
+    .fireflink-logo svg{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+    
+    .panel-title{
+      font-size:18px;
+      font-weight:700;
+      position:relative;
+      z-index:1;
+      text-shadow:0 2px 4px rgba(0,0,0,0.1);
+      margin:0;
+    }
+    .panel-sub{
+      font-size:13px;
+      opacity:0.95;
+      margin-top:4px;
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .panel-sub span::before {
+      content: '•';
+      margin: 0 8px;
+    }
+    .panel-sub span:first-child::before {
+      display: none;
+    }
+    
+    /* Status Color Coding */
+    .status-passed {
+      color: #10b981 !important;
+      font-weight: 700;
+    }
+    .status-failed {
+      color: #ef4444 !important;
+      font-weight: 700;
+    }
+    .status-warning {
+      color: #f59e0b !important;
+      font-weight: 700;
+    }
+    .status-skipped {
+      color: #94a3b8 !important;
+      font-weight: 700;
+    }
+    
+    .panel-header-right{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      position:relative;
+      z-index:2;
+    }
+    .btn-light{
+      background:rgba(255,255,255,0.2);
+      color:#fff;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.3);
+      padding:8px 16px;
+      font-size:12px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      backdrop-filter:blur(10px);
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .btn-light:hover{
+      background:rgba(255,255,255,0.3);
+      border-color:rgba(255,255,255,0.5);
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    .btn-light:active{
+      transform:translateY(0);
+    }
+
+    .steps-body{
+      flex:1;
+      overflow:auto;
+      padding:10px 16px 14px;
+      background:linear-gradient(180deg,#f5f3ff 0,#f9fafb 40%,#f9fafb 100%);
+    }
+
+    /* Step Section Headers */
+    .step-section-header{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 16px;
+      background:linear-gradient(135deg, rgba(100,36,184,0.05) 0%, rgba(192,132,252,0.05) 100%);
+      border-left:4px solid #6424b8;
+      border-radius:8px;
+      margin:16px 0 8px 0;
+      cursor:pointer;
+      user-select:none;
+      transition:all 0.2s ease;
+    }
+    .step-section-header:hover{
+      background:linear-gradient(135deg, rgba(100,36,184,0.08) 0%, rgba(192,132,252,0.08) 100%);
+    }
+    .section-icon{
+      font-size:12px;
+      transition:transform 0.2s ease;
+    }
+    .section-title{
+      font-weight:700;
+      font-size:13px;
+      color:#6424b8;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+    .section-badge{
+      margin-left:auto;
+      background:white;
+      padding:4px 10px;
+      border-radius:12px;
+      font-size:11px;
+      font-weight:600;
+      color:#64748b;
+    }
+    .preconditions-header{
+      border-left-color:#3b82f6;
+    }
+    .preconditions-header .section-title{
+      color:#3b82f6;
+    }
+    .steps-header{
+      border-left-color:#10b981;
+    }
+    .steps-header .section-title{
+      color:#10b981;
+    }
+    .postconditions-header{
+      border-left-color:#f59e0b;
+    }
+    .postconditions-header .section-title{
+      color:#f59e0b;
+    }
+    .step-section-content{
+      padding:0 4px;
+    }
+
+    /* Single Line Step Rows */
+    .step-row{
+      display:grid;
+      grid-template-columns:20px 40px 1fr 200px 100px;
+      gap:8px;
+      padding:12px 16px;
+      background:white;
+      border:1px solid #e2e8f0;
+      border-radius:8px;
+      margin-bottom:8px;
+      align-items:center;
+      transition:all 0.2s ease;
+      cursor:pointer;
+      min-height:48px;
+    }
+    .step-row:hover{
+      background:#f8fafc;
+      border-color:#cbd5e1;
+      box-shadow:0 2px 8px rgba(0,0,0,0.05);
+      transform:translateX(2px);
+    }
+    .step-row.active{
+      background:#ede9fe;
+      border-color:#8b5cf6;
+      box-shadow:0 0 0 2px rgba(139,92,246,0.1);
+    }
+    .step-expand-icon{
+      font-size:10px;
+      color:#94a3b8;
+      transition:transform 0.2s ease;
+      text-align:center;
+    }
+    .step-expand-placeholder{
+      width:20px;
+    }
+    .step-number{
+      font-weight:600;
+      color:#64748b;
+      font-size:13px;
+    }
+    .step-description{
+      font-size:13px;
+      color:#0f172a;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      cursor:help;
+    }
+    .step-result{
+      font-size:12px;
+      color:#64748b;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      cursor:help;
+    }
+    .step-row .step-status{
+      text-align:right;
+      font-weight:600;
+      font-size:11px;
+    }
+
+    .step-item{
+      border-radius:14px;
+      background:#fff;
+      border:1px solid #e5e7eb;
+      padding:10px 12px;
+      margin-bottom:8px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      cursor:pointer;
+      transition:background .18s ease,border-color .18s ease,transform .16s ease;
+    }
+
+    /* Darker highlight for selected step + hover */
+    .step-item:hover,
+    .step-item.active{
+      background:#ede9fe;
+      border-color:var(--primary-dark);
+      font-weight:600;
+    }
+
+    .step-main{max-width:72%;}
+    .step-title{font-size:13px;font-weight:600;}
+    .step-line2{font-size:12px;color:var(--muted);margin-top:2px;}
+    .step-footer{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+    .step-right{
+      text-align:right;
+      font-size:11px;
+      color:var(--muted);
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:6px;
+    }
+
+    .step-group{
+      border-left:3px solid #c4b5fd;
+      margin-left:2px;
+      padding-left:8px;
+    }
+    .step-group-children{
+      margin-top:6px;
+      display:none;
+      padding-left:14px;
+      border-left:2px solid #c4b5fd55;
+      animation:stepSlideDown .22s ease-out;
+    }
+    .step-group.open .step-group-children{display:block;}
+
+    @keyframes stepSlideDown{
+      from{opacity:0;transform:translateY(-4px);}
+      to{opacity:1;transform:translateY(0);}
+    }
+
+    .steps-footer{
+      padding:6px 16px 10px;
+      font-size:12px;
+      color:var(--muted);
+      background:#f3f4ff;
+      border-top:1px solid #e5e7eb;
+    }
+
+    /* Step detail body */
+    .detail-body{
+      flex:1;
+      overflow:auto;
+      padding:10px 16px 16px;
+      background:#0b1120;
+      color:#e5e7eb;
+      font-size:12px;
+    }
+    .detail-tabs{
+      display:flex;
+      margin:0;
+      padding:0 32px;
+      list-style:none;
+      background:#f8f9ff;
+      border-bottom:2px solid #e5e7f0;
+      gap:4px;
+      animation:fadeIn 0.6s ease 0.2s both;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .detail-tab{
+      padding:16px 24px;
+      font-size:14px;
+      font-weight:600;
+      color:#64748b;
+      background:transparent;
+      cursor:pointer;
+      border:none;
+      position:relative;
+      transition:all 0.3s ease;
+      border-radius:8px 8px 0 0;
+      user-select:none;
+    }
+    .detail-tab:hover{
+      color:#6424b8;
+      background:rgba(100, 36, 184, 0.05);
+    }
+    .detail-tab.active{
+      background:#fff;
+      color:#6424b8;
+      box-shadow:0 -2px 8px rgba(100, 36, 184, 0.1);
+    }
+    .detail-tab.active::after{
+      content:'';
+      position:absolute;
+      bottom:0;
+      left:0;
+      right:0;
+      height:3px;
+      background:linear-gradient(90deg, #6424b8 0%, #8b4fd9 100%);
+      border-radius:3px 3px 0 0;
+      animation:slideWidth 0.3s ease;
+    }
+    
+    @keyframes slideWidth {
+      from {
+        width: 0;
+        left: 50%;
+      }
+      to {
+        width: 100%;
+        left: 0;
+      }
+    }
+    
+    .tab-badge{
+      display:inline-block;
+      padding:2px 8px;
+      margin-left:8px;
+      background:rgba(100, 36, 184, 0.1);
+      border-radius:12px;
+      font-size:11px;
+      font-weight:700;
+      color:#6424b8;
+    }
+    .detail-tab.active .tab-badge{
+      background:linear-gradient(135deg, #6424b8 0%, #8b4fd9 100%);
+      color:white;
+    }
+    
+    .detail-section{
+      display:none;
+      flex:1;
+      animation:tabFadeIn 0.4s ease;
+      overflow:hidden;
+    }
+    .detail-section.active{
+      display:flex;
+      flex-direction:column;
+    }
+    
+    @keyframes tabFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .detail-body{
+      flex:1;
+      overflow:hidden;
+      background:#fff;
+      animation:fadeInUp 0.6s ease 0.3s both;
+      display:flex;
+      flex-direction:column;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Custom Scrollbar - keep for individual table scrolling if needed */
+    .detail-body::-webkit-scrollbar {
+      width: 8px;
+    }
+    .detail-body::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .detail-body::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #6424b8 0%, #8b4fd9 100%);
+      border-radius: 4px;
+    }
+    .detail-body::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #4a1990 0%, #6424b8 100%);
+    }
+    
+    /* Table Container with Fixed Height */
+    .table-container{
+      flex:1;
+      overflow-y:auto;
+      padding:24px 32px;
+    }
+    
+    .table-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    .table-container::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #6424b8 0%, #8b4fd9 100%);
+      border-radius: 4px;
+    }
+
+    .tbl{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      font-size:13px;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 2px 8px rgba(0,0,0,0.04);
+      background:white;
+      margin-bottom:0;
+      border:1px solid #e5e7f0;
+    }
+    .tbl th,
+    .tbl td{
+      border:1px solid #1f2937;
+      padding:6px 8px;
+      text-align:left;
+      white-space:nowrap;
+    }
+    .tbl th{
+      background:linear-gradient(135deg, #6424b8 0%, #8b4fd9 100%);
+      color:white;
+      font-weight:700;
+      padding:16px 20px;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+      text-align:left;
+      border:none;
+    }
+    .tbl td{
+      background:white;
+      color:#334155;
+      padding:16px 20px;
+      font-size:13px;
+      border-bottom:1px solid #f1f5f9;
+    }
+    .tbl tbody tr{
+      transition:all 0.3s ease;
+      animation:tableRowFadeIn 0.4s ease both;
+    }
+    .tbl tbody tr:nth-child(1) { animation-delay: 0.05s; }
+    .tbl tbody tr:nth-child(2) { animation-delay: 0.1s; }
+    .tbl tbody tr:nth-child(3) { animation-delay: 0.15s; }
+    .tbl tbody tr:nth-child(4) { animation-delay: 0.2s; }
+    .tbl tbody tr:nth-child(n+5) { animation-delay: 0.25s; }
+    
+    @keyframes tableRowFadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .tbl tbody tr:hover{
+      background:rgba(100, 36, 184, 0.03);
+      transform:translateX(4px);
+      box-shadow:-4px 0 0 rgba(100, 36, 184, 0.3);
+    }
+    .tbl tbody tr:last-child td{
+      border-bottom:none;
+    }
+    
+    /* Status Badges in Tables */
+    .status-badge-cell{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 12px;
+      border-radius:16px;
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.3px;
+    }
+    .status-badge-cell.used{
+      background:rgba(16, 185, 129, 0.1);
+      color:#059669;
+    }
+    .status-badge-cell.not-used{
+      background:rgba(148, 163, 184, 0.1);
+      color:#64748b;
+    }
+
+    .log-pre{
+      background:#1e293b;
+      border:none;
+      padding:24px;
+      border-radius:12px;
+      white-space:pre-wrap;
+      font-family:ui-monospace,Menlo,Consolas,monospace;
+      color:#e2e8f0;
+      font-size:13px;
+      line-height:1.6;
+      box-shadow:0 4px 16px rgba(0,0,0,0.1);
+      animation:fadeInScale 0.5s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .log-pre::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #6424b8 0%, #8b4fd9 50%, #6424b8 100%);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    
+    /* Toast Animations */
+    @keyframes slideInUp {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideOutDown {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+    }
+    
+    /* Empty State */
+    .empty-state{
+      text-align:center;
+      padding:60px 20px;
+      color:#94a3b8;
+      animation:fadeIn 0.5s ease;
+    }
+    .empty-icon{
+      font-size:48px;
+      margin-bottom:16px;
+      opacity:0.3;
+    }
+    .empty-text{
+      font-size:14px;
+      font-weight:500;
+    }
+    
+    /* Log container specific styling */
+    .log-pre{
+      margin:0;
+    }
+
+    .muted{color:var(--muted);}
+    .pill-micro{
+      font-size:11px;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+    }
+
+    @media (max-width:1100px){
+      .exec-wrap{width:80vw;}
+      .exec-wrap.expanded{width:90vw;}
+      .steps-panel,.step-detail{width:100vw;min-width:0;}
+    }
+  </style>
+
+<!-- ================= FireFlink Brand Theme Override ================= -->
+<style>
+:root{
+  --primary:#71347B;
+  --primary-dark:#5A2962;
+  --primary-darker:#451F4B;
+  --primary-light:#8C4A96;
+  --primary-lighter:#E9D7EC;
+  --primary-glow:rgba(113,52,123,0.18);
+
+  --bg-primary:#F8F6FA;
+  --bg-secondary:#F3EDF6;
+  --bg-card:#FFFFFF;
+  --bg-hover:#EFE6F2;
+  --bg-panel:#FBFAFC;
+
+  --text-primary:#1F1B24;
+  --text-secondary:#5C5662;
+  --text-muted:#8B8492;
+  --text-inverse:#FFFFFF;
+
+  --border-light:#E4D9E8;
+  --border-medium:#D1C1D7;
+}
+
+body{
+  background:linear-gradient(180deg,#F8F6FA 0%,#F3EDF6 100%) !important;
+  color:var(--text-primary) !important;
+}
+
+.header{
+  background:rgba(255,255,255,0.95) !important;
+  border:1px solid var(--border-light) !important;
+}
+
+.title{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark)) !important;
+  -webkit-background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+}
+
+.btn{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark)) !important;
+  box-shadow:0 10px 28px var(--primary-glow) !important;
+}
+
+.btn.secondary{
+  background:#fff !important;
+  color:var(--primary-dark) !important;
+  border:1px solid var(--border-medium) !important;
+}
+
+.exec-card:hover,
+.tc-row.active,
+.tc-row:hover,
+.step-row.active{
+  background:var(--primary-lighter) !important;
+  border-left:4px solid var(--primary) !important;
+}
+
+.panel-header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark)) !important;
+}
+</style>
+<!-- ================================================================ -->
+
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-card">
+      <div class="loading-logo">
+        <svg width="100%" height="100%" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.30815 2.44586C8.00129 2.63411 7.75562 2.75272 7.509 2.87602C6.58748 3.36737 5.7272 3.79754 4.80568 4.28795C4.74167 4.32431 4.68966 4.37863 4.6562 4.44421C4.62274 4.5098 4.60923 4.58376 4.61736 4.65693V23.2755C4.61736 23.5212 4.55624 23.7057 4.31057 23.7669C3.85464 23.9552 3.36009 24.0312 2.86866 23.9884C2.37722 23.9457 1.90328 23.7854 1.48672 23.5212C1.18046 23.3059 0.919692 23.0323 0.7194 22.716C0.519108 22.3997 0.383245 22.047 0.319539 21.6782C0.16509 20.682 0.102006 19.6737 0.131213 18.666C0.0700298 13.7497 0.00884184 8.77315 0.00884184 3.85683C-0.0391441 3.07511 0.108741 2.29379 0.439038 1.58366C0.717224 0.990161 1.19816 0.515478 1.79523 0.245067C2.39231 -0.0253429 3.06627 -0.0737303 3.69584 0.108649C4.56928 0.371444 5.39798 0.764987 6.15361 1.27586C6.82945 1.64484 7.50528 2.01287 8.11994 2.38186C8.18583 2.32255 8.24697 2.38373 8.30815 2.44586Z" fill="#6424b8"/>
+          <path d="M8.42587 21.3723V16.0258C8.42442 15.9536 8.44083 15.8821 8.47367 15.8177C8.50651 15.7533 8.55473 15.6981 8.61408 15.6569C10.7037 14.4887 12.7934 13.3215 14.8209 12.1543C15.3734 11.8465 15.9269 11.5397 16.5406 11.1707C16.1854 10.9425 15.8159 10.7372 15.4346 10.556C14.5131 10.0026 13.5917 9.51123 12.6701 8.95587C12.6247 8.92503 12.5711 8.90853 12.5162 8.90853C12.4613 8.90853 12.4077 8.92503 12.3623 8.95587C11.1951 9.6929 10.0891 10.3678 8.92098 11.1067C8.8598 11.1067 8.85982 11.1679 8.79769 11.1679V7.2352C8.79594 7.15413 8.81183 7.07365 8.84434 6.99937C8.87686 6.92508 8.92516 6.85876 8.9859 6.80504C10.0307 6.06801 11.0746 5.39311 12.0583 4.6542C12.1149 4.62396 12.1781 4.60815 12.2422 4.60815C12.3064 4.60815 12.3697 4.62396 12.4263 4.6542C13.8382 5.45335 15.3141 6.31368 16.7279 7.11188C17.7106 7.66442 18.6943 8.21789 19.7401 8.77042C20.488 9.15981 21.1072 9.75743 21.5228 10.4911C21.7846 10.9685 21.8898 11.5161 21.8236 12.0566C21.7574 12.5971 21.5232 13.1031 21.1539 13.5032C20.6682 14.0556 20.0849 14.5138 19.4332 14.8549C18.0213 15.654 16.6677 16.5144 15.2549 17.3126C13.473 18.3574 11.7524 19.3401 9.97051 20.3849C9.4095 20.7577 8.91722 21.0607 8.42587 21.3723Z" fill="#6424b8"/>
+        </svg>
+      </div>
+      <div class="loading-text" id="loadingText">Loading</div>
+      <div class="loading-percentage" id="loadingPercentage">0%</div>
+      <div class="loading-subtext" id="loadingSubtext">Please wait...</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="logo">
+      <svg width="100%" height="100%" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8.30815 2.44586C8.00129 2.63411 7.75562 2.75272 7.509 2.87602C6.58748 3.36737 5.7272 3.79754 4.80568 4.28795C4.74167 4.32431 4.68966 4.37863 4.6562 4.44421C4.62274 4.5098 4.60923 4.58376 4.61736 4.65693V23.2755C4.61736 23.5212 4.55624 23.7057 4.31057 23.7669C3.85464 23.9552 3.36009 24.0312 2.86866 23.9884C2.37722 23.9457 1.90328 23.7854 1.48672 23.5212C1.18046 23.3059 0.919692 23.0323 0.7194 22.716C0.519108 22.3997 0.383245 22.047 0.319539 21.6782C0.16509 20.682 0.102006 19.6737 0.131213 18.666C0.0700298 13.7497 0.00884184 8.77315 0.00884184 3.85683C-0.0391441 3.07511 0.108741 2.29379 0.439038 1.58366C0.717224 0.990161 1.19816 0.515478 1.79523 0.245067C2.39231 -0.0253429 3.06627 -0.0737303 3.69584 0.108649C4.56928 0.371444 5.39798 0.764987 6.15361 1.27586C6.82945 1.64484 7.50528 2.01287 8.11994 2.38186C8.18583 2.32255 8.24697 2.38373 8.30815 2.44586Z" fill="#6424b8"/>
+        <path d="M8.42587 21.3723V16.0258C8.42442 15.9536 8.44083 15.8821 8.47367 15.8177C8.50651 15.7533 8.55473 15.6981 8.61408 15.6569C10.7037 14.4887 12.7934 13.3215 14.8209 12.1543C15.3734 11.8465 15.9269 11.5397 16.5406 11.1707C16.1854 10.9425 15.8159 10.7372 15.4346 10.556C14.5131 10.0026 13.5917 9.51123 12.6701 8.95587C12.6247 8.92503 12.5711 8.90853 12.5162 8.90853C12.4613 8.90853 12.4077 8.92503 12.3623 8.95587C11.1951 9.6929 10.0891 10.3678 8.92098 11.1067C8.8598 11.1067 8.85982 11.1679 8.79769 11.1679V7.2352C8.79594 7.15413 8.81183 7.07365 8.84434 6.99937C8.87686 6.92508 8.92516 6.85876 8.9859 6.80504C10.0307 6.06801 11.0746 5.39311 12.0583 4.6542C12.1149 4.62396 12.1781 4.60815 12.2422 4.60815C12.3064 4.60815 12.3697 4.62396 12.4263 4.6542C13.8382 5.45335 15.3141 6.31368 16.7279 7.11188C17.7106 7.66442 18.6943 8.21789 19.7401 8.77042C20.488 9.15981 21.1072 9.75743 21.5228 10.4911C21.7846 10.9685 21.8898 11.5161 21.8236 12.0566C21.7574 12.5971 21.5232 13.1031 21.1539 13.5032C20.6682 14.0556 20.0849 14.5138 19.4332 14.8549C18.0213 15.654 16.6677 16.5144 15.2549 17.3126C13.473 18.3574 11.7524 19.3401 9.97051 20.3849C9.4095 20.7577 8.91722 21.0607 8.42587 21.3723Z" fill="#6424b8"/>
+      </svg>
+    </div>
+    <div>
+      <div class="title">FireFlink HTML Report</div>
+      <div class="subtitle">Modules · Testcases · Step Diagnostics</div>
+    </div>
+    <div class="controls">
+      <input class="id-input" id="licenseIdInput" placeholder="License ID" />
+      <input class="id-input" id="executionIdInput" placeholder="Execution ID" />
+      <button class="btn" id="loadApiBtn">
+        <span>🔄</span> Generate Report
+      </button>
+      <input class="id-input report-name" id="reportNameInput" placeholder="Report Name (optional)" />
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;color:var(--text-secondary);">
+        <input type="checkbox" id="downloadFilteredCheckbox" style="cursor:pointer;"/>
+        <span>Download only expanded/filtered</span>
+      </label>
+      <button class="btn secondary" id="downloadHtmlBtn">
+        <span>📄</span> Download HTML
+      </button>
+      <button class="btn secondary" id="exportBtn">
+        <span>📊</span> Export Excel
+      </button>
+    </div>
+  </div>
+
+  <div class="exec-row" id="execRow" aria-live="polite"></div>
+
+  <!-- Overlay + Steps / Step Detail Panels -->
+  <div class="overlay" id="overlay">
+    <!-- Steps panel -->
+    <div class="steps-panel" id="stepsPanel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title" id="stepsTitle">Steps</div>
+          <div class="panel-sub" id="stepsSub"></div>
+        </div>
+        <div class="panel-header-right">
+          <button class="btn-light" id="closeStepsBtn">Close</button>
+        </div>
+      </div>
+      <div class="steps-body" id="stepsBody"></div>
+      <div class="steps-footer" id="stepsFooter"></div>
+    </div>
+
+    <!-- Step detail -->
+    <div class="step-detail" id="stepDetailPanel">
+      <div class="panel-header">
+        <div class="panel-header-left">
+          <div class="fireflink-logo">
+            <svg width="100%" height="100%" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8.30815 2.44586C8.00129 2.63411 7.75562 2.75272 7.509 2.87602C6.58748 3.36737 5.7272 3.79754 4.80568 4.28795C4.74167 4.32431 4.68966 4.37863 4.6562 4.44421C4.62274 4.5098 4.60923 4.58376 4.61736 4.65693V23.2755C4.61736 23.5212 4.55624 23.7057 4.31057 23.7669C3.85464 23.9552 3.36009 24.0312 2.86866 23.9884C2.37722 23.9457 1.90328 23.7854 1.48672 23.5212C1.18046 23.3059 0.919692 23.0323 0.7194 22.716C0.519108 22.3997 0.383245 22.047 0.319539 21.6782C0.16509 20.682 0.102006 19.6737 0.131213 18.666C0.0700298 13.7497 0.00884184 8.77315 0.00884184 3.85683C-0.0391441 3.07511 0.108741 2.29379 0.439038 1.58366C0.717224 0.990161 1.19816 0.515478 1.79523 0.245067C2.39231 -0.0253429 3.06627 -0.0737303 3.69584 0.108649C4.56928 0.371444 5.39798 0.764987 6.15361 1.27586C6.82945 1.64484 7.50528 2.01287 8.11994 2.38186C8.18583 2.32255 8.24697 2.38373 8.30815 2.44586Z" fill="white"/>
+              <path d="M8.42587 21.3723V16.0258C8.42442 15.9536 8.44083 15.8821 8.47367 15.8177C8.50651 15.7533 8.55473 15.6981 8.61408 15.6569C10.7037 14.4887 12.7934 13.3215 14.8209 12.1543C15.3734 11.8465 15.9269 11.5397 16.5406 11.1707C16.1854 10.9425 15.8159 10.7372 15.4346 10.556C14.5131 10.0026 13.5917 9.51123 12.6701 8.95587C12.6247 8.92503 12.5711 8.90853 12.5162 8.90853C12.4613 8.90853 12.4077 8.92503 12.3623 8.95587C11.1951 9.6929 10.0891 10.3678 8.92098 11.1067C8.8598 11.1067 8.85982 11.1679 8.79769 11.1679V7.2352C8.79594 7.15413 8.81183 7.07365 8.84434 6.99937C8.87686 6.92508 8.92516 6.85876 8.9859 6.80504C10.0307 6.06801 11.0746 5.39311 12.0583 4.6542C12.1149 4.62396 12.1781 4.60815 12.2422 4.60815C12.3064 4.60815 12.3697 4.62396 12.4263 4.6542C13.8382 5.45335 15.3141 6.31368 16.7279 7.11188C17.7106 7.66442 18.6943 8.21789 19.7401 8.77042C20.488 9.15981 21.1072 9.75743 21.5228 10.4911C21.7846 10.9685 21.8898 11.5161 21.8236 12.0566C21.7574 12.5971 21.5232 13.1031 21.1539 13.5032C20.6682 14.0556 20.0849 14.5138 19.4332 14.8549C18.0213 15.654 16.6677 16.5144 15.2549 17.3126C13.473 18.3574 11.7524 19.3401 9.97051 20.3849C9.4095 20.7577 8.91722 21.0607 8.42587 21.3723Z" fill="white"/>
+            </svg>
+          </div>
+          <div>
+            <div class="panel-title" id="detailTitle">Step Detail</div>
+            <div class="panel-sub" id="detailSub"></div>
+          </div>
+        </div>
+        <div class="panel-header-right">
+          <button class="btn-light" id="screenshotBtn" style="display:none">📷 Screenshot</button>
+          <button class="btn-light" id="videoBtn" style="display:none">🎥 Video</button>
+          <button class="btn-light" id="closeDetailBtn">✕</button>
+        </div>
+      </div>
+      <ul class="detail-tabs">
+        <li class="detail-tab active" data-tab="elementsTab">
+          Elements <span class="tab-badge" id="elementsBadge">0</span>
+        </li>
+        <li class="detail-tab" data-tab="varsTab">
+          Variables <span class="tab-badge" id="variablesBadge">0</span>
+        </li>
+        <li class="detail-tab" data-tab="logsTab">Logs</li>
+      </ul>
+      <div class="detail-body">
+        <div class="detail-section active" id="elementsTab"></div>
+        <div class="detail-section" id="varsTab"></div>
+        <div class="detail-section" id="logsTab"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SheetJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script>
+    /* ---------- Utility helpers ---------- */
+    function sanitize(v){ if(v===null || v===undefined) return ''; return String(v); }
+        function getBrowserIcon(browserName) {
+  const b = (browserName || "").toLowerCase();
+
+  if (b.includes("fireflink"))
+    return { icon: "data:image/svg+xml;base64," + btoa('<svg viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.30815 2.44586C8.00129 2.63411 7.75562 2.75272 7.509 2.87602C6.58748 3.36737 5.7272 3.79754 4.80568 4.28795C4.74167 4.32431 4.68966 4.37863 4.6562 4.44421C4.62274 4.5098 4.60923 4.58376 4.61736 4.65693V23.2755C4.61736 23.5212 4.55624 23.7057 4.31057 23.7669C3.85464 23.9552 3.36009 24.0312 2.86866 23.9884C2.37722 23.9457 1.90328 23.7854 1.48672 23.5212C1.18046 23.3059 0.919692 23.0323 0.7194 22.716C0.519108 22.3997 0.383245 22.047 0.319539 21.6782C0.16509 20.682 0.102006 19.6737 0.131213 18.666C0.0700298 13.7497 0.00884184 8.77315 0.00884184 3.85683C-0.0391441 3.07511 0.108741 2.29379 0.439038 1.58366C0.717224 0.990161 1.19816 0.515478 1.79523 0.245067C2.39231 -0.0253429 3.06627 -0.0737303 3.69584 0.108649C4.56928 0.371444 5.39798 0.764987 6.15361 1.27586C6.82945 1.64484 7.50528 2.01287 8.11994 2.38186C8.18583 2.32255 8.24697 2.38373 8.30815 2.44586Z" fill="#6424b8"/><path d="M8.42587 21.3723V16.0258C8.42442 15.9536 8.44083 15.8821 8.47367 15.8177C8.50651 15.7533 8.55473 15.6981 8.61408 15.6569C10.7037 14.4887 12.7934 13.3215 14.8209 12.1543C15.3734 11.8465 15.9269 11.5397 16.5406 11.1707C16.1854 10.9425 15.8159 10.7372 15.4346 10.556C14.5131 10.0026 13.5917 9.51123 12.6701 8.95587C12.6247 8.92503 12.5711 8.90853 12.5162 8.90853C12.4613 8.90853 12.4077 8.92503 12.3623 8.95587C11.1951 9.6929 10.0891 10.3678 8.92098 11.1067C8.8598 11.1067 8.85982 11.1679 8.79769 11.1679V7.2352C8.79594 7.15413 8.81183 7.07365 8.84434 6.99937C8.87686 6.92508 8.92516 6.85876 8.9859 6.80504C10.0307 6.06801 11.0746 5.39311 12.0583 4.6542C12.1149 4.62396 12.1781 4.60815 12.2422 4.60815C12.3064 4.60815 12.3697 4.62396 12.4263 4.6542C13.8382 5.45335 15.3141 6.31368 16.7279 7.11188C17.7106 7.66442 18.6943 8.21789 19.7401 8.77042C20.488 9.15981 21.1072 9.75743 21.5228 10.4911C21.7846 10.9685 21.8898 11.5161 21.8236 12.0566C21.7574 12.5971 21.5232 13.1031 21.1539 13.5032C20.6682 14.0556 20.0849 14.5138 19.4332 14.8549C18.0213 15.654 16.6677 16.5144 15.2549 17.3126C13.473 18.3574 11.7524 19.3401 9.97051 20.3849C9.4095 20.7577 8.91722 21.0607 8.42587 21.3723Z" fill="#6424b8"/></svg>') };
+
+  if (b.includes("chrome"))
+    return { icon: "https://www.google.com/chrome/static/images/chrome-logo.svg" };
+
+  if (b.includes("firefox"))
+    return { icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Firefox_logo%2C_2019.png/960px-Firefox_logo%2C_2019.png?20200417133504" };
+
+  if (b.includes("edge"))
+    return { icon: "https://static.wikia.nocookie.net/logopedia/images/4/4d/Microsoft_Edge_%282019%29.svg/revision/latest?cb=20210706013511" };
+
+  if (b.includes("safari"))
+    return { icon: "https://upload.wikimedia.org/wikipedia/commons/5/52/Safari_browser_logo.svg" };
+
+  return { icon: "" };
+}
+
+    function fmtTS(ts){
+      if(!ts) return '';
+      const d = new Date(ts);
+      if(isNaN(d)) return ts;
+      const z=n=>String(n).padStart(2,'0');
+      return `${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}`;
+    }
+    function fmtDateTime(ts){
+      if(!ts) return '';
+      const d=new Date(ts);
+      if(isNaN(d)) return ts;
+      const z=n=>String(n).padStart(2,'0');
+      return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())} ${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}`;
+    }
+    function calcDuration(s,e){
+      if(!s||!e) return '';
+      const a=new Date(s), b=new Date(e);
+      if(isNaN(a)||isNaN(b)) return '';
+      const diff=Math.max(0,b-a);
+      const totalSec=Math.floor(diff/1000);
+      const hh=Math.floor(totalSec/3600);
+      const mm=Math.floor((totalSec%3600)/60);
+      const ss=totalSec%60;
+      const z=n=>String(n).padStart(2,'0');
+      return `${z(hh)}:${z(mm)}:${z(ss)}`;
+    }
+    function statusClass(status){
+      const s=(status||'').toString().toUpperCase();
+      if(s.startsWith('PASS')) return 'status-pass';
+      if(s.startsWith('FAIL')) return 'status-fail';
+      if(s.includes('WARN')) return 'status-warn';
+      if(s.includes('SKIP')) return 'status-skip';
+      return 'status-pass';
+    }
+    function statusText(status){
+      const s=(status||'').toString().toUpperCase();
+      if(s.startsWith('PASS')) return 'Passed';
+      if(s.startsWith('FAIL')) return 'Failed';
+      if(s.includes('WARN')) return 'Warning';
+      if(s.includes('SKIP')) return 'Skipped';
+      return status || '';
+    }
+
+    /* ---------- Normalisation ---------- */
+    function normStep(rawStep){
+      if(!rawStep) return {};
+      const sr = rawStep.stepResult || rawStep;
+
+      const status = (rawStep.status || sr.status || '').toString();
+      const name   = sr.name || sr.title || rawStep.title || rawStep.name || '';
+      const nlp    = rawStep.nlpName || sr.nlpName || '';
+      const description = sr.description || rawStep.description || sr.message || '';
+      const timestamp   = rawStep.executedOn || rawStep.timestamp || sr.executedOn || '';
+      const logMsg      = sr.message || rawStep.message || '';
+
+      const screenshot = sr.screenshotURL || rawStep.screenshotURL || rawStep.screenshotPath || sr.screenshotPath || rawStep.screenshot || null;
+      const video      = sr.videoURL || rawStep.videoURL || rawStep.video || null;
+
+      // Try to get inputs from both step level and stepResult level
+      const rawInputs = rawStep.stepInputs || sr.stepInputs || [];
+      const returnVar = rawStep.stepReturn || sr.stepReturn || null;
+      const variables = [];
+
+      const noisyNames = new Set(['element','elementName','elementType','ifCheckPointIsFailed','ifCheckPointIsFailedAndStopScriptExecution']);
+      if(Array.isArray(rawInputs)){
+        rawInputs.forEach(v=>{
+          const nm = v.name || v.reference || '';
+          if(noisyNames.has(nm)) return;
+          const ref = v.reference || '';
+          if(ref === 'ELEMENT') return;
+          const row = {
+            name: nm || (ref && ref!=='GLOBAL'?ref:''),
+            type: v.type || (ref || ''),
+            value: v.actualValue ?? v.value ?? ''
+          };
+          if(row.name || row.value) variables.push(row);
+        });
+      }
+      if(returnVar && (returnVar.name || returnVar.value)){
+        variables.unshift({
+          name: returnVar.name || '',
+          type: returnVar.type || 'GLOBAL',
+          value: returnVar.value ?? ''
+        });
+      }
+
+      // Try to get elements from both step level and stepResult level
+      const rawElements = rawStep.elementDetails || sr.elementDetails || [];
+      const elements = [];
+      if(Array.isArray(rawElements)){
+        rawElements.forEach(e=>{
+          const locs = e.locators || [];
+          if(Array.isArray(locs)){
+            locs.forEach(l=>{
+              elements.push({
+                locatorType: l.name || l.locatorType || '',
+                valueType: l.type || l.valueType || '',
+                locatorValue: l.actualValue || l.value || '',
+                status: l.status || ''
+              });
+            });
+          }
+        });
+      }
+
+      // NEW: Detect step type for special handling
+      const stepType = rawStep.stepType || '';
+      const type = rawStep.type || '';
+      const isGroup = type === 'Group' || stepType === 'StepGroup';
+      const isCondition = stepType === 'Condition';
+
+      // NEW: Enhanced children handling for step groups
+      let children = null;
+      
+      // Priority 1: stepResults array (most common for step groups)
+      if(rawStep.stepResults && Array.isArray(rawStep.stepResults) && rawStep.stepResults.length > 0){
+        children = rawStep.stepResults.map(normStep);
+      } 
+      // Priority 2: stepResult.stepResults
+      else if(sr.stepResults && Array.isArray(sr.stepResults) && sr.stepResults.length > 0){
+        children = sr.stepResults.map(normStep);
+      } 
+      // Priority 3: children array
+      else if(Array.isArray(rawStep.children) && rawStep.children.length > 0){
+        children = rawStep.children.map(normStep);
+      }
+
+      return {
+        name,
+        nlp,
+        description,
+        timestamp,
+        status,
+        log: logMsg,
+        screenshot,
+        video,
+        variables,
+        elements,
+        children,
+        stepType,      // NEW: For identifying conditions, loops, etc.
+        isGroup,       // NEW: For identifying step groups
+        isCondition,   // NEW: For special formatting
+        raw: rawStep
+      };
+    }
+
+    function deriveStatusFromSteps(steps){
+      const list = (steps||[]).map(s => (s.status||'').toString().toUpperCase());
+      if(list.some(s=>s.startsWith('FAIL'))) return 'FAIL';
+      if(list.some(s=>s.includes('WARN'))) return 'WARNING';
+      if(list.some(s=>s.includes('SKIP'))) return 'SKIPPED';
+      if(list.length) return 'PASS';
+      return '';
+    }
+
+    function convertScript(sc){
+      // First check if there's a 'steps' field directly on the script
+      const directSteps = Array.isArray(sc.steps) ? sc.steps : [];
+      const stepsRaw = Array.isArray(sc.stepResults) ? sc.stepResults : directSteps;
+      let steps = [];
+      let preSteps = [];
+      let postSteps = [];
+      
+      // Check if script has children with pre/post conditions
+      if(Array.isArray(sc.children)){
+        sc.children.forEach(child => {
+          const childType = (child.type || '').toString().toLowerCase();
+          const childTitle = (child.title || child.name || '').toString().toLowerCase();
+          
+          if(childType === 'precondition' || childTitle === 'preconditions'){
+            // Extract precondition steps
+            if(Array.isArray(child.children)){
+              child.children.forEach(step => {
+                if(Array.isArray(step.children)){
+                  step.children.forEach(s => preSteps.push(normStep(s)));
+                } else {
+                  preSteps.push(normStep(step));
+                }
+              });
+            }
+          } else if(childType === 'postcondition' || childTitle === 'postconditions'){
+            // Extract postcondition steps
+            if(Array.isArray(child.children)){
+              child.children.forEach(step => {
+                if(Array.isArray(step.children)){
+                  step.children.forEach(s => postSteps.push(normStep(s)));
+                } else {
+                  postSteps.push(normStep(step));
+                }
+              });
+            }
+          } else {
+            // Regular steps
+            if(Array.isArray(child.children)){
+              child.children.forEach(s => steps.push(normStep(s)));
+            } else {
+              steps.push(normStep(child));
+            }
+          }
+        });
+      }
+      
+      // NEW: Handle cascaded preConditions from preConditions.stepResults field
+      if(sc.preConditions && sc.preConditions.stepResults && Array.isArray(sc.preConditions.stepResults)){
+        // These are step groups that were cascaded from module level
+        sc.preConditions.stepResults.forEach(stepGroup => {
+          preSteps.push(normStep(stepGroup));
+        });
+      }
+      
+      // NEW: Handle cascaded postConditions from postConditions.stepResults field
+      if(sc.postConditions && sc.postConditions.stepResults && Array.isArray(sc.postConditions.stepResults)){
+        sc.postConditions.stepResults.forEach(stepGroup => {
+          postSteps.push(normStep(stepGroup));
+        });
+      }
+      
+      // Also check for preConditions and postConditions fields (array format)
+      if(Array.isArray(sc.preConditions) && sc.preConditions.length > 0){
+        sc.preConditions.forEach(pc => {
+          if(Array.isArray(pc.steps)){
+            pc.steps.forEach(s => preSteps.push(normStep(s)));
+          } else if(Array.isArray(pc.children)){
+            pc.children.forEach(s => preSteps.push(normStep(s)));
+          }
+        });
+      }
+      
+      if(Array.isArray(sc.postConditions) && sc.postConditions.length > 0){
+        sc.postConditions.forEach(pc => {
+          if(Array.isArray(pc.steps)){
+            pc.steps.forEach(s => postSteps.push(normStep(s)));
+          } else if(Array.isArray(pc.children)){
+            pc.children.forEach(s => postSteps.push(normStep(s)));
+          }
+        });
+      }
+      
+      // Add steps from stepResults/steps if not found in children
+      if(steps.length === 0 && stepsRaw.length > 0){
+        steps = (stepsRaw||[]).map(normStep);
+      }
+      
+      const status = (sc.status || deriveStatusFromSteps(steps) || '').toString();
+      const name   = sc.name || sc.title || 'Testcase';
+      const start  = sc.executionStartTime || sc.startTime || sc.executedOn || sc.startTimestamp || '';
+      const end    = sc.executionEndTime || sc.endTime || sc.executionEndTimestamp || '';
+      const kind   = sc.scriptType || sc.type || '';
+      
+      return { 
+        name, 
+        status, 
+        start, 
+        end, 
+        type:kind, 
+        steps, 
+        preConditionSteps: preSteps,
+        postConditionSteps: postSteps,
+        raw:sc 
+      };
+    }
+
+    function normalizeInput(inp){
+      const resp = inp.responseObject || inp;
+      const machines = Array.isArray(resp.machines) ? resp.machines : (resp.machines?[resp.machines]:[]);
+      const executions = [];
+
+      machines.forEach(machine=>{
+        const machineName = machine.machineName || machine.machineInfo?.hostName || machine.hostName || 'Machine';
+        const browserName = machine.browserName || machine.browserInfo?.name || '';
+        const browserVersion = machine.browserVersion || machine.browserInfo?.version || '';
+        const platformName = machine.platformName || machine.platform || '';
+        const runs = Array.isArray(machine.results)?machine.results:(machine.results?[machine.results]:[]);
+
+        runs.forEach(run=>{
+          const rootChildren = Array.isArray(run.children)?run.children:(run.children?[run.children]:[]);
+          if(!rootChildren.length) return;
+
+          const title = resp.suiteName || run.title || 'Execution';
+          const executedOn = resp.executedOn || run.executedOn || '';
+          const duration   = resp.duration || run.executionDurationInHourMinSecFormat || '';
+          const envName    = machine.executionEnv || run.environmentName || '';
+
+          // Extract projectEnvironmentVariables to get actual platform name
+          let actualPlatformName = platformName;
+          let peVariableSetName = '';
+          let projectEnvVars = {};
+          
+          // Try to get projectEnvironmentVariables from the run data
+          if(rootChildren[0]?.selectedSystem?.runLevelExecutionDataSets?.[0]){
+            const execDataSet = rootChildren[0].selectedSystem.runLevelExecutionDataSets[0];
+            projectEnvVars = execDataSet.projectEnvironmentVariables || {};
+            
+            // Get the PE variable set name that was actually used
+            peVariableSetName = execDataSet.peVariableSetName || '';
+            
+            // Look for platform name in various fields
+            actualPlatformName = projectEnvVars.PlatformName || 
+                                projectEnvVars.platformName || 
+                                projectEnvVars.platformNameAOS || 
+                                projectEnvVars.platformNameiOS ||
+                                projectEnvVars.executionView ||
+                                projectEnvVars.platformLambda ||
+                                platformName ||
+                                envName;
+          }
+
+          const modules = [];
+          function collectModules(node, parentIsRoot = false){
+            if(!node) return;
+            const nodeType = (node.type||'').toString().toLowerCase();
+            
+            // Skip the root module that contains everything
+            if(nodeType === 'module' && parentIsRoot){
+              // Don't add this module, just process its children
+              if(Array.isArray(node.children)){
+                node.children.forEach(child => collectModules(child, false));
+              }
+              return;
+            }
+            
+            if(nodeType === 'module'){
+              const modName = node.title || node.name || 'Module';
+              const modStart = node.executedOn || '';
+              const scripts = [];
+              function collectScripts(n){
+                if(!n) return;
+                if((n.type||'').toString().toLowerCase()==='script'){
+                  scripts.push(convertScript(n));
+                }
+                if(Array.isArray(n.children)){
+                  n.children.forEach(collectScripts);
+                }
+              }
+              if(Array.isArray(node.children)){
+                node.children.forEach(collectScripts);
+              }
+              modules.push({moduleName:modName,start:modStart,testcases:scripts});
+            }
+            if(Array.isArray(node.children)){
+              node.children.forEach(child => collectModules(child, false));
+            }
+          }
+          rootChildren.forEach(node => collectModules(node, true));
+
+          const counts={PASS:0,FAIL:0,WARNING:0,SKIPPED:0,TERMINATED:0};
+          modules.forEach(m=>{
+            (m.testcases||[]).forEach(tc=>{
+              const s=(tc.status||'').toUpperCase();
+              if(s.startsWith('PASS')) counts.PASS++;
+              else if(s.startsWith('FAIL')) counts.FAIL++;
+              else if(s.includes('WARN')) counts.WARNING++;
+              else if(s.includes('SKIP')) counts.SKIPPED++;
+              else if(s.includes('TERMINAT')) counts.TERMINATED++;
+            });
+          });
+
+          executions.push({
+            title,
+            machineName,
+            browser:browserName,
+            version:browserVersion,
+            executedOn,
+            duration,
+            envName,
+            platformName: actualPlatformName,
+            peVariableSetName: peVariableSetName,  // Single name from actual execution
+            testDataSetNames: resp.testDataSetNames || [],
+            globalVariableSetNames: resp.globalVariableSetNames || [],
+            modules,
+            counts
+          });
+        });
+      });
+
+      return executions;
+    }
+
+    /* ---------- Pie SVG ---------- */
+    /* Enhanced Pie Chart with Animations and Tooltips */
+    function drawPieSVG(c){
+      // Include TERMINATED status
+      const passCount = c.PASS||0;
+      const failCount = c.FAIL||0;
+      const warnCount = c.WARNING||0;
+      const skipCount = c.SKIPPED||0;
+      const terminatedCount = c.TERMINATED||0;
+      
+      const total = passCount + failCount + warnCount + skipCount + terminatedCount || 1;
+
+      // Calculate percentages with 2 decimals
+      const pctPass = ((passCount/total)*100).toFixed(2);
+      const pctFail = ((failCount/total)*100).toFixed(2);
+      const pctWarn = ((warnCount/total)*100).toFixed(2);
+      const pctSkip = ((skipCount/total)*100).toFixed(2);
+      const pctTerminated = ((terminatedCount/total)*100).toFixed(2);
+
+      const colors={
+        PASS:'#10b981',
+        FAIL:'#ef4444',
+        WARNING:'#f59e0b',
+        SKIPPED:'#94a3b8',
+        TERMINATED:'#6b7280'
+      };
+      
+      const labels={
+        PASS:'Passed',
+        FAIL:'Failed',
+        WARNING:'Warning',
+        SKIPPED:'Skipped',
+        TERMINATED:'Terminated'
+      };
+
+      // Build donut arcs using stroke method
+      const radius = 60;
+      const strokeWidth = 14;
+      const circumference = 2 * Math.PI * radius;
+      
+      let currentOffset = 0;
+      const arcs = [];
+      
+      const parts=[
+        {k:'PASS',v:passCount,pct:pctPass},
+        {k:'FAIL',v:failCount,pct:pctFail},
+        {k:'WARNING',v:warnCount,pct:pctWarn},
+        {k:'SKIPPED',v:skipCount,pct:pctSkip},
+        {k:'TERMINATED',v:terminatedCount,pct:pctTerminated}
+      ];
+      
+      parts.forEach((p) => {
+        if(p.v > 0) {
+          const fraction = p.v / total;
+          const arcLength = circumference * fraction;
+          const gap = 0; // No gaps
+          
+          arcs.push({
+            color: colors[p.k],
+            label: labels[p.k],
+            count: p.v,
+            pct: p.pct,
+            strokeDasharray: `${arcLength} ${circumference}`,
+            strokeDashoffset: -currentOffset
+          });
+          
+          currentOffset += arcLength + gap;
+        }
+      });
+
+      // Determine center label
+      let centerLabel = 'TOTAL';
+      let centerCount = total;
+      let centerPct = '100%';
+      let centerColor = '#6424b8';
+      
+      if (failCount > passCount && failCount > 0) {
+        centerLabel = 'FAILED';
+        centerCount = failCount;
+        centerPct = pctFail + '%';
+        centerColor = '#ef4444';
+      } else if (passCount > 0) {
+        centerLabel = 'PASSED';
+        centerCount = passCount;
+        centerPct = pctPass + '%';
+        centerColor = '#10b981';
+      }
+
+      // Build SVG with full circle background
+      const arcsSVG = arcs.map((arc) => `
+        <circle
+          cx="78"
+          cy="78"
+          r="${radius}"
+          fill="none"
+          stroke="${arc.color}"
+          stroke-width="${strokeWidth}"
+          stroke-dasharray="${arc.strokeDasharray}"
+          stroke-dashoffset="${arc.strokeDashoffset}"
+          stroke-linecap="butt"
+          transform="rotate(-90 78 78)"
+          opacity="0.9">
+          <title>${arc.label}: ${arc.count} Scripts (${arc.pct}%)</title>
+        </circle>
+      `).join('');
+
+      return `
+        <div class="pie-container">
+          <svg class="pie pie-animated" viewBox="0 0 156 156" style="width:156px;height:156px;">
+            <!-- Background full circle (gray) -->
+            <circle cx="78" cy="78" r="${radius}" fill="none" stroke="#e0e0e0" stroke-width="${strokeWidth}" opacity="0.4"></circle>
+            <!-- Colored arcs on top -->
+            ${arcsSVG}
+            <!-- Center text -->
+            <text x="78" y="68" text-anchor="middle" fill="${centerColor}" style="font-size:14px;font-weight:700;letter-spacing:0.5px;">${centerLabel}</text>
+            <text x="78" y="90" text-anchor="middle" fill="#0f172a" style="font-size:22px;font-weight:800;">${centerCount} Scripts</text>
+            <rect x="56" y="96" width="44" height="20" fill="rgba(100,36,184,0.15)" rx="6" ry="6"></rect>
+            <text x="78" y="110" text-anchor="middle" fill="${centerColor}" style="font-size:13px;font-weight:700;">${centerPct}</text>
+          </svg>
+        </div>
+        <div class="pie-legend">
+          <div class="legend-row legend-pass" title="Passed: ${passCount} out of ${total} tests (${pctPass}%)">
+            <span>Passed</span><span>${passCount} (${pctPass}%)</span>
+          </div>
+          <div class="legend-row legend-fail" title="Failed: ${failCount} out of ${total} tests (${pctFail}%)">
+            <span>Failed</span><span>${failCount} (${pctFail}%)</span>
+          </div>
+          <div class="legend-row legend-warn" title="Warning: ${warnCount} out of ${total} tests (${pctWarn}%)">
+            <span>Warning</span><span>${warnCount} (${pctWarn}%)</span>
+          </div>
+          <div class="legend-row legend-skip" title="Skipped: ${skipCount} out of ${total} tests (${pctSkip}%)">
+            <span>Skipped</span><span>${skipCount} (${pctSkip}%)</span>
+          </div>
+          <div class="legend-row legend-terminated" title="Terminated: ${terminatedCount} out of ${total} tests (${pctTerminated}%)">
+            <span>Terminated</span><span>${terminatedCount} (${pctTerminated}%)</span>
+          </div>
+        </div>
+        `;
+    }
+        /* ---------- DOM refs ---------- */
+    const execRow = document.getElementById('execRow');
+    const licenseIdInput = document.getElementById('licenseIdInput');
+    const executionIdInput = document.getElementById('executionIdInput');
+    const loadApiBtn = document.getElementById('loadApiBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const downloadHtmlBtn = document.getElementById('downloadHtmlBtn');
+    const reportNameInput = document.getElementById('reportNameInput');
+
+    const overlay = document.getElementById('overlay');
+    const stepsPanel = document.getElementById('stepsPanel');
+    const stepsTitle = document.getElementById('stepsTitle');
+    const stepsSub = document.getElementById('stepsSub');
+    const stepsBody = document.getElementById('stepsBody');
+    const stepsFooter = document.getElementById('stepsFooter');
+    const closeStepsBtn = document.getElementById('closeStepsBtn');
+
+    const stepDetailPanel = document.getElementById('stepDetailPanel');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailSub = document.getElementById('detailSub');
+    const screenshotBtn = document.getElementById('screenshotBtn');
+    const videoBtn = document.getElementById('videoBtn');
+    const closeDetailBtn = document.getElementById('closeDetailBtn');
+    const elementsTab = document.getElementById('elementsTab');
+    const varsTab = document.getElementById('varsTab');
+    const logsTab = document.getElementById('logsTab');
+    const detailTabs = document.querySelectorAll('.detail-tab');
+
+    let executions = [];
+    let currentStepsCtx = null;
+    let currentStepDetailCtx = null;
+
+    /* ---------- Highlight helpers ---------- */
+    function clearTcActive(){
+      document.querySelectorAll('.tc-row.active').forEach(el=>el.classList.remove('active'));
+    }
+    function clearStepActive(){
+      document.querySelectorAll('.step-item.active').forEach(el=>el.classList.remove('active'));
+    }
+
+    // NEW: Helper to count total steps including nested
+    function countTotalSteps(steps){
+      if(!Array.isArray(steps)) return 0;
+      return steps.reduce((count, step) => {
+        const childCount = (step.children && Array.isArray(step.children)) ? step.children.length : 0;
+        return count + 1 + childCount;
+      }, 0);
+    }
+    
+    // Count only parent-level steps (for section badges)
+    function countParentSteps(steps){
+      if(!Array.isArray(steps)) return 0;
+      return steps.length; // Just the parent count, not nested children
+    }
+
+    // NEW: Helper to get status class for badges
+    function getStepStatusSummary(step){
+      if(!step.children || step.children.length === 0){
+        return '';
+      }
+      const total = step.children.length;
+      const passed = step.children.filter(c => (c.status||'').toUpperCase().startsWith('PASS')).length;
+      const failed = step.children.filter(c => (c.status||'').toUpperCase().startsWith('FAIL')).length;
+      
+      if(failed > 0) return `${passed}/${total} Passed, ${failed} Failed`;
+      return `${passed}/${total} Passed`;
+    }
+
+    /* ---------- Build filtered data for preview ---------- */
+    function buildFilteredExecutionsForPreview(){
+      const result = [];
+
+      document.querySelectorAll('.exec-wrap').forEach(wrap=>{
+        // Only expanded cards are considered selected
+        if(!wrap.classList.contains('expanded')) return;
+
+        const execIdx = parseInt(wrap.dataset.exec, 10);
+        if(isNaN(execIdx) || !executions[execIdx]) return;
+
+        const ex = executions[execIdx];
+        const clonedExec = JSON.parse(JSON.stringify(ex)); // deep copy
+
+        const modulesCard = wrap.querySelector('.modules-card');
+        if(!modulesCard) return;
+
+        const moduleFilterSelect = modulesCard.querySelector('.module-filter');
+        const selectedModuleName = moduleFilterSelect ? moduleFilterSelect.value : 'ALL';
+
+        const moduleBlocks = modulesCard.querySelectorAll('.module-block');
+        const filteredModules = [];
+
+        moduleBlocks.forEach((block, modIndex)=>{
+          const originalModule = ex.modules[modIndex];
+          if(!originalModule) return;
+
+          // Module dropdown filter
+          if(selectedModuleName !== 'ALL' && selectedModuleName !== originalModule.moduleName){
+            return;
+          }
+
+          const statusBtn = block.querySelector('.sf-btn.active');
+          const selectedStatus = statusBtn ? (statusBtn.dataset.status || 'ALL') : 'ALL';
+
+          const clonedModule = JSON.parse(JSON.stringify(originalModule));
+          clonedModule.testcases = clonedModule.testcases.filter(tc=>{
+            const st = (tc.status || '').toUpperCase();
+            if(selectedStatus === 'ALL') return true;
+            if(selectedStatus === 'PASS' && st.startsWith('PASS')) return true;
+            if(selectedStatus === 'FAIL' && st.startsWith('FAIL')) return true;
+            if(selectedStatus === 'WARNING' && st.includes('WARN')) return true;
+            if(selectedStatus === 'SKIPPED' && st.includes('SKIP')) return true;
+            return false;
+          });
+
+          if(clonedModule.testcases && clonedModule.testcases.length){
+            filteredModules.push(clonedModule);
+          }
+        });
+
+        if(filteredModules.length){
+          clonedExec.modules = filteredModules;
+          result.push(clonedExec);
+        }
+      });
+
+      return result;
+    }
+
+    /* ---------- Rendering ---------- */
+    function renderExecutions(){
+      execRow.innerHTML='';
+      if(!executions.length){
+        for(let i=0;i<3;i++){
+          const wrap=document.createElement('div');
+          wrap.className='exec-wrap';
+          const card=document.createElement('div');
+          card.className='exec-card';
+          card.innerHTML=`
+            <div class="exec-top">
+              <div class="exec-left">
+                <div class="browser-icon"></div>
+                <div>
+                  <div class="exec-name">Execution Placeholder ${i+1}</div>
+                  <div class="exec-sub">Enter IDs above and click "Load Report" to fetch runs</div>
+                </div>
+              </div>
+            </div>
+            <div class="exec-stats-row">
+              <div class="scripts-pill">— Scripts</div>
+              <div class="pie-wrap">
+                <svg class="pie" viewBox="0 0 42 42"><circle cx="21" cy="21" r="20" fill="#e5e7eb"></circle><circle cx="21" cy="21" r="11" fill="#fff"></circle></svg>
+                <div class="pie-legend">
+                  <div class="legend-row legend-pass"><span>Pass</span><span>0%</span></div>
+                  <div class="legend-row legend-fail"><span>Fail</span><span>0%</span></div>
+                  <div class="legend-row legend-warn"><span>Warn</span><span>0%</span></div>
+                  <div class="legend-row legend-skip"><span>Skip</span><span>0%</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="exec-footer">
+              <span>Platform: <span class="strong">-</span></span>
+              <div class="exec-footer-middle">
+                <span class="pill-micro">⇔</span>
+              </div>
+              <span>Run time: --:--:--</span>
+            </div>
+          `;
+          wrap.appendChild(card);
+          execRow.appendChild(wrap);
+        }
+        return;
+      }
+
+      executions.forEach((ex,idx)=>{
+        const wrap=document.createElement('div');
+        wrap.className='exec-wrap expanded';  // start expanded
+        wrap.dataset.exec=idx;
+
+        const card=document.createElement('div');
+        card.className='exec-card';
+
+        const totalScripts=(ex.modules||[]).reduce((acc,m)=>acc+(m.testcases?m.testcases.length:0),0);
+        const browserInfo = getBrowserIcon(ex.browser);
+        const suiteName = ex.title === 'Spencers Gifts Online' ? ex.title : (ex.title || 'Execution');
+        
+        card.innerHTML=`
+          <div class="exec-top">
+            <div class="exec-left">
+              <div class="browser-icon ${browserInfo.class}">
+                <img src="${browserInfo.icon}" class="browser-img" alt="${sanitize(ex.browser) || 'browser'}">
+              </div>
+              <div>
+                <div class="exec-name">${sanitize(suiteName)}</div>
+                <div class="exec-sub">${sanitize(ex.browser)} ${sanitize(ex.version)} · ${sanitize(ex.machineName)}</div>
+              </div>
+            </div>
+            <div class="exec-top-right">
+              <button class="btn icon-only secondary expand-btn" data-expand="${idx}" title="Expand / collapse">⇔</button>
+            </div>
+          </div>
+          <div class="exec-stats-row">
+            <div class="scripts-pill">${totalScripts} Scripts</div>
+            <div class="pie-wrap">${drawPieSVG(ex.counts||{})}</div>
+          </div>
+          <div class="exec-footer">
+            <div class="exec-footer-left">
+              ${ex.peVariableSetName ? `
+                <span>Platform Variables: <span class="pe-var-badge">${sanitize(ex.peVariableSetName)}</span></span>
+              ` : `<span>Platform Variables: <span class="pe-var-badge">Local</span></span>`}
+            </div>
+            <div class="exec-footer-right">
+              <div class="exec-footer-time">
+                <span class="exec-footer-label">Initiated On:</span> <span class="exec-footer-value">${fmtDateTime(ex.executedOn)}</span>
+              </div>
+              <div class="exec-footer-time">
+                <span class="exec-footer-label">Duration:</span> <span class="exec-footer-value">${sanitize(ex.duration||'')}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        wrap.appendChild(card);
+
+        /* Modules card for this execution */
+        const modulesCard=document.createElement('div');
+        modulesCard.className='modules-card';
+        
+        // Use suite name if it's "Spencers Gifts Online", otherwise use "Modules"
+        const modulesHeaderTitle = suiteName === 'Spencers Gifts Online' ? 'Spencers Gifts Online' : 'Modules';
+        
+        modulesCard.innerHTML=`
+          <div class="modules-header">
+            <div><strong>${modulesHeaderTitle}</strong> · ${(ex.modules||[]).length} modules</div>
+            <select class="module-filter">
+              <option value="ALL">All Modules</option>
+            </select>
+          </div>
+          <div class="modules-list"></div>
+        `;
+        const list = modulesCard.querySelector('.modules-list');
+        const moduleFilterSelect = modulesCard.querySelector('.module-filter');
+
+        // Populate module filter options
+        (ex.modules||[]).forEach(m=>{
+          const opt=document.createElement('option');
+          opt.value=m.moduleName;
+          opt.textContent=m.moduleName;
+          moduleFilterSelect.appendChild(opt);
+        });
+
+        // Change handler to show only selected module(s)
+        moduleFilterSelect.addEventListener('change',()=>{
+          const val = moduleFilterSelect.value;
+          list.querySelectorAll('.module-block').forEach(block=>{
+            const modName = block.dataset.modName;
+            if(val==='ALL' || val===modName){
+              block.style.display='';
+            }else{
+              block.style.display='none';
+            }
+          });
+        });
+
+        (ex.modules||[]).forEach((m,mIdx)=>{
+          const block=document.createElement('div');
+          block.className='module-block';
+          block.dataset.modName = m.moduleName;
+          const tests = m.testcases||[];
+          const passed=tests.filter(t=> (t.status||'').toUpperCase().startsWith('PASS')).length;
+          block.innerHTML=`
+            <div class="module-head">
+              <div class="name">${sanitize(m.moduleName)}</div>
+              <div>${tests.length} Scripts · <span class="muted">${passed} passed</span></div>
+            </div>
+            <div class="status-filter">
+              <button class="sf-btn active" data-status="ALL">All</button>
+              <button class="sf-btn" data-status="PASS">Pass</button>
+              <button class="sf-btn" data-status="FAIL">Fail</button>
+              <button class="sf-btn" data-status="WARNING">Warn</button>
+              <button class="sf-btn" data-status="SKIPPED">Skip</button>
+            </div>
+            <div class="module-tests-list"></div>
+          `;
+          const testsList=block.querySelector('.module-tests-list');
+
+          tests.forEach((tc,tcIdx)=>{
+            const row=document.createElement('div');
+            row.className='tc-row';
+            row.dataset.status = tc.status || '';
+            row.innerHTML=`
+              <div class="tc-main">
+                <div class="tc-name">${sanitize(tc.name)}</div>
+                <div class="tc-meta">${fmtDateTime(tc.start)} · ${(tc.steps||[]).length} steps</div>
+              </div>
+              <div>
+                <div class="status-badge ${statusClass(tc.status)}">${statusText(tc.status)}</div>
+                <div class="tc-meta">${calcDuration(tc.start,tc.end)}</div>
+              </div>
+            `;
+            row.addEventListener('click',()=>{
+              clearTcActive();
+              row.classList.add('active');
+              openStepsPanel(idx,mIdx,tcIdx);
+            });
+            testsList.appendChild(row);
+          });
+
+          // Status filter buttons (within this module)
+          const sfBtns = block.querySelectorAll('.sf-btn');
+          sfBtns.forEach(btn=>{
+            btn.addEventListener('click',()=>{
+              const val = btn.dataset.status;
+              sfBtns.forEach(b=>b.classList.remove('active'));
+              btn.classList.add('active');
+              const rows = block.querySelectorAll('.tc-row');
+              rows.forEach(r=>{
+                const st = (r.dataset.status || '').toUpperCase();
+                let show = false;
+                if(val==='ALL') show=true;
+                else if(val==='PASS' && st.startsWith('PASS')) show=true;
+                else if(val==='FAIL' && st.startsWith('FAIL')) show=true;
+                else if(val==='WARNING' && st.includes('WARN')) show=true;
+                else if(val==='SKIPPED' && st.includes('SKIP')) show=true;
+                r.style.display = show ? '' : 'none';
+              });
+            });
+          });
+
+          list.appendChild(block);
+        });
+
+        wrap.appendChild(modulesCard);
+        execRow.appendChild(wrap);
+
+        card.querySelector('[data-expand]').addEventListener('click',e=>{
+          e.stopPropagation();
+          wrap.classList.toggle('expanded');
+        });
+      });
+    }
+
+    /* ---------- Hierarchical Step Rendering ---------- */
+    function renderStepsHierarchical(steps, startNum, section, indent = 0){
+      if(!Array.isArray(steps) || steps.length === 0) return '';
+      
+      let html = '';
+      let currentNum = startNum;
+      
+      steps.forEach((st, idx) => {
+        const hasChildren = st.children && Array.isArray(st.children) && st.children.length > 0;
+        const isCondition = st.isCondition || st.stepType === 'Condition';
+        const isGroup = st.isGroup || st.stepType === 'StepGroup';
+        const isDataProvider = st.stepType === 'DataProvider';
+        const isLoop = st.stepType === 'Loop';
+        
+        // Bold only for control structures (If/Else/Loop), NOT for regular step groups
+        const needsBold = isCondition || isDataProvider || isLoop;
+        const titleStyle = needsBold ? 'font-weight:700;color:var(--text-primary);' : '';
+        
+        const title = st.name || st.description || st.nlp || `Step ${currentNum}`;
+        const result = st.log || st.description || '';
+        const status = st.status || '';
+        
+        if(hasChildren){
+          // For step groups, show child count
+          const childCount = st.children.length;
+          const displayTitle = title;
+          const statusBadge = status ? `<div class="step-status status-badge ${statusClass(status)}">${statusText(status)}</div>` : '';
+          const groupId = `${section}-group-${idx}`;
+          
+          // Render parent step with dropdown arrow, collapsed by default
+          html += `
+            <div class="step-row step-group" data-step-idx="${idx}" data-section="${section}" 
+                 data-group-id="${groupId}">
+              <div class="step-expand-icon" style="transform:rotate(-90deg);">▼</div>
+              <div class="step-number">${currentNum}.</div>
+              <div class="step-description" style="${titleStyle}" title="${sanitize(title)}">
+                ${sanitize(displayTitle)}
+              </div>
+              <div class="step-result" title="${sanitize(result)}">${sanitize(result)}</div>
+              ${statusBadge}
+            </div>
+          `;
+          
+          // Render nested children container (initially HIDDEN/collapsed)
+          html += `<div class="step-group-children" data-group-id="${groupId}" style="display:none;">`;
+          
+          st.children.forEach((child, childIdx) => {
+            const subNum = `${currentNum}.${childIdx + 1}`;
+            const childTitle = child.name || child.description || child.nlp || `Step ${subNum}`;
+            const childResult = child.log || child.description || '';
+            const childStatus = child.status || '';
+            const childIsCondition = child.isCondition || child.stepType === 'Condition';
+            const childTitleStyle = childIsCondition ? 'font-weight:700;color:var(--text-primary);' : '';
+            
+            html += `
+              <div class="step-row step-nested" data-step-idx="${childIdx}" 
+                   data-section="${section}-nested-${idx}" 
+                   data-parent-idx="${idx}"
+                   style="margin-left:20px;background:rgba(100,36,184,0.02);">
+                <div class="step-expand-placeholder"></div>
+                <div class="step-number" style="color:var(--primary);font-weight:500;">${subNum}</div>
+                <div class="step-description" style="${childTitleStyle}" title="${sanitize(childTitle)}">
+                  ${sanitize(childTitle)}
+                </div>
+                <div class="step-result" title="${sanitize(childResult)}">${sanitize(childResult)}</div>
+                <div class="step-status status-badge ${statusClass(childStatus)}">${statusText(childStatus)}</div>
+              </div>
+            `;
+          });
+          
+          html += `</div>`; // Close step-group-children
+          
+          currentNum++; // Only increment by 1 for the parent step
+        } else {
+          // Regular step without children
+          const statusBadge = status ? `<div class="step-status status-badge ${statusClass(status)}">${statusText(status)}</div>` : '';
+          
+          html += `
+            <div class="step-row ${needsBold ? 'step-control' : ''}" data-step-idx="${idx}" data-section="${section}"
+                 style="${needsBold ? 'background:linear-gradient(90deg, var(--primary-glow) 0%, transparent 100%);' : ''}">
+              <div class="step-expand-placeholder"></div>
+              <div class="step-number">${currentNum}.</div>
+              <div class="step-description" style="${titleStyle}" title="${sanitize(title)}">
+                ${sanitize(title)}
+              </div>
+              <div class="step-result" title="${sanitize(result)}">${sanitize(result)}</div>
+              ${statusBadge}
+            </div>
+          `;
+          currentNum++; // Increment by 1 for regular step
+        }
+      });
+      
+      return html;
+    }
+
+    /* ---------- Steps + Step Detail ---------- */
+    function openStepsPanel(execIdx,modIdx,tcIdx){
+      const ex = executions[execIdx];
+      if(!ex) return;
+      const mod = ex.modules[modIdx];
+      if(!mod) return;
+      const tc = mod.testcases[tcIdx];
+      if(!tc) return;
+      currentStepsCtx = {execIdx,modIdx,tcIdx};
+
+      stepsTitle.textContent = tc.name;
+      stepsSub.textContent = `Status: ${statusText(tc.status)} · Started: ${fmtDateTime(tc.start)} · Duration: ${calcDuration(tc.start,tc.end)}`;
+      stepsBody.innerHTML='';
+      clearStepActive();
+
+      const preSteps = tc.preConditionSteps || [];
+      const mainSteps = tc.steps || [];
+      const postSteps = tc.postConditionSteps || [];
+      const totalSteps = countTotalSteps(preSteps) + countTotalSteps(mainSteps) + countTotalSteps(postSteps);
+
+      let stepsHTML = '';
+      let stepIndex = 1;
+
+      // Pre Conditions Section with hierarchical rendering
+      if(preSteps.length > 0){
+        const parentPreCount = countParentSteps(preSteps);
+        stepsHTML += `
+          <div class="step-section-header preconditions-header">
+            <span class="section-icon">▼</span>
+            <span class="section-title">Pre Conditions</span>
+            <span class="section-badge">${parentPreCount} ${parentPreCount === 1 ? 'step' : 'steps'}</span>
+          </div>
+          <div class="step-section-content" data-section="pre">
+        `;
+        stepsHTML += renderStepsHierarchical(preSteps, stepIndex, 'pre', 0);
+        stepIndex += parentPreCount; // Increment by parent count only
+        stepsHTML += `</div>`;
+      }
+
+      // Steps Section with hierarchical rendering
+      if(mainSteps.length > 0){
+        const parentMainCount = countParentSteps(mainSteps);
+        stepsHTML += `
+          <div class="step-section-header steps-header">
+            <span class="section-icon">▼</span>
+            <span class="section-title">Steps</span>
+            <span class="section-badge">${parentMainCount} ${parentMainCount === 1 ? 'step' : 'steps'}</span>
+          </div>
+          <div class="step-section-content" data-section="main">
+        `;
+        stepsHTML += renderStepsHierarchical(mainSteps, stepIndex, 'main', 0);
+        stepIndex += parentMainCount; // Increment by parent count only
+        stepsHTML += `</div>`;
+      }
+
+      // Post Conditions Section with hierarchical rendering
+      if(postSteps.length > 0){
+        const parentPostCount = countParentSteps(postSteps);
+        stepsHTML += `
+          <div class="step-section-header postconditions-header">
+            <span class="section-icon">▼</span>
+            <span class="section-title">Post Conditions</span>
+            <span class="section-badge">${parentPostCount} ${parentPostCount === 1 ? 'step' : 'steps'}</span>
+          </div>
+          <div class="step-section-content" data-section="post">
+        `;
+        stepsHTML += renderStepsHierarchical(postSteps, stepIndex, 'post', 0);
+        stepsHTML += `</div>`;
+      }
+
+      const totalParentSteps = countParentSteps(preSteps) + countParentSteps(mainSteps) + countParentSteps(postSteps);
+      if(totalParentSteps === 0){
+        stepsHTML = '<div class="muted" style="padding:20px;text-align:center;">No steps available.</div>';
+      }
+
+      stepsBody.innerHTML = stepsHTML;
+      
+      // Add click handlers to all step rows (including nested)
+      const allStepRows = stepsBody.querySelectorAll('.step-row');
+      allStepRows.forEach((row) => {
+        row.addEventListener('click', (e) => {
+          const stepIdx = parseInt(row.dataset.stepIdx);
+          const section = row.dataset.section;
+          const parentIdx = row.dataset.parentIdx ? parseInt(row.dataset.parentIdx) : null;
+          const groupId = row.dataset.groupId;
+          const isGroupParent = row.classList.contains('step-group');
+          const isNested = section.includes('-nested-');
+          
+          // If this is a step group parent, toggle expand/collapse
+          if(isGroupParent && groupId){
+            e.stopPropagation(); // Prevent the detail view from opening
+            
+            const childrenContainer = stepsBody.querySelector(`.step-group-children[data-group-id="${groupId}"]`);
+            const expandIcon = row.querySelector('.step-expand-icon');
+            
+            if(childrenContainer && expandIcon){
+              const isCollapsed = childrenContainer.style.display === 'none';
+              
+              if(isCollapsed){
+                // Expand: show children, rotate arrow to down
+                childrenContainer.style.display = 'block';
+                expandIcon.style.transform = 'rotate(0deg)';
+              } else {
+                // Collapse: hide children, rotate arrow to right
+                childrenContainer.style.display = 'none';
+                expandIcon.style.transform = 'rotate(-90deg)';
+              }
+            }
+            return; // Don't open detail view for parent group
+          }
+          
+          // For nested steps or regular steps, open detail view
+          clearStepActive();
+          row.classList.add('active');
+          
+          let actualStep, actualStepIdx;
+          
+          if(isNested){
+            // Extract parent index from section (e.g., "main-nested-5")
+            const matches = section.match(/(\w+)-nested-(\d+)/);
+            if(matches){
+              const sectionType = matches[1];
+              const pIdx = parseInt(matches[2]);
+              
+              // Get the parent step and then the child
+              if(sectionType === 'pre' && preSteps[pIdx]){
+                const parentStep = preSteps[pIdx];
+                actualStep = parentStep.children && parentStep.children[stepIdx];
+                actualStepIdx = stepIdx;
+              } else if(sectionType === 'main' && mainSteps[pIdx]){
+                const parentStep = mainSteps[pIdx];
+                actualStep = parentStep.children && parentStep.children[stepIdx];
+                actualStepIdx = stepIdx;
+              } else if(sectionType === 'post' && postSteps[pIdx]){
+                const parentStep = postSteps[pIdx];
+                actualStep = parentStep.children && parentStep.children[stepIdx];
+                actualStepIdx = stepIdx;
+              }
+            }
+          } else {
+            // Regular step
+            if(section === 'pre'){
+              actualStepIdx = stepIdx;
+              actualStep = preSteps[actualStepIdx];
+            } else if(section === 'main'){
+              actualStepIdx = stepIdx;
+              actualStep = mainSteps[actualStepIdx];
+            } else if(section === 'post'){
+              actualStepIdx = stepIdx;
+              actualStep = postSteps[actualStepIdx];
+            }
+          }
+          
+          if(actualStep){
+            openStepDetail(execIdx, modIdx, tcIdx, actualStepIdx, isNested, parentIdx, actualStep);
+          }
+        });
+      });
+      
+      const totalPre = countParentSteps(preSteps);
+      const totalMain = countParentSteps(mainSteps);
+      const totalPost = countParentSteps(postSteps);
+      stepsFooter.textContent = `Module: ${mod.moduleName} · Preconditions: ${totalPre} · Steps: ${totalMain} · Postconditions: ${totalPost}`;
+      overlay.classList.add('show');
+      stepsPanel.classList.add('show');
+      stepDetailPanel.classList.remove('show');
+    }
+
+    function renderStepRow(st, displayIndex, fallbackStatus, arrayIndex, section){
+      const title = st.name || st.description || st.nlp || `Step ${displayIndex}`;
+      // Use log (which contains the message) as the result
+      const result = st.log || st.description || st.name || '';
+      const status = st.status || fallbackStatus || '';
+      
+      return `
+        <div class="step-row" data-step-idx="${arrayIndex}" data-section="${section}">
+          <div class="step-number">${displayIndex}.</div>
+          <div class="step-description" title="${sanitize(title)}">
+            ${sanitize(title)}
+          </div>
+          <div class="step-result" title="${sanitize(result)}">
+            ${sanitize(result)}
+          </div>
+          <div class="step-status status-badge ${statusClass(status)}">
+            ${statusText(status)}
+          </div>
+        </div>
+      `;
+    }
+
+    function closeStepsPanel(){
+      stepsPanel.classList.remove('show');
+      clearStepActive();
+      if(!currentStepDetailCtx){
+        overlay.classList.remove('show');
+      }
+      currentStepsCtx=null;
+    }
+
+    function openStepDetail(execIdx,modIdx,tcIdx,stepIdx,isChild,parentIdx,stepObj){
+      const ex = executions[execIdx];
+      if(!ex) return;
+      const mod = ex.modules[modIdx];
+      if(!mod) return;
+      const tc = mod.testcases[tcIdx];
+      if(!tc) return;
+      
+      // Use provided step object or fall back to finding it
+      let step = stepObj;
+      if(!step){
+        const steps = tc.steps||[];
+        step = steps[stepIdx];
+        if(isChild && typeof parentIdx==='number'){
+          const parent = steps[parentIdx];
+          if(parent && parent.children) step = parent.children[stepIdx];
+        }
+      }
+      
+      if(!step) return;
+      
+      let labelIndex = stepIdx+1;
+      if(isChild && typeof parentIdx==='number'){
+        labelIndex = `${parentIdx+1}.${stepIdx+1}`;
+      }
+      
+      currentStepDetailCtx={execIdx,modIdx,tcIdx,stepIdx,isChild,parentIdx};
+
+      // Update header with enhanced styling
+      detailTitle.textContent = `${tc.name} — Step ${labelIndex}`;
+      
+      // Get status and color class
+      const status = step.status || tc.status || '';
+      const statusDisplay = statusText(status);
+      const statusColorClass = getStatusColorClass(status);
+      
+      // Build subtitle with colored status
+      const subtitleParts = [];
+      if (step.name || step.nlp) {
+        subtitleParts.push(`<span>${sanitize(step.name || step.nlp)}</span>`);
+      }
+      subtitleParts.push(`<span>Status: <span class="${statusColorClass}">${statusDisplay.toUpperCase()}</span></span>`);
+      if (step.timestamp) {
+        subtitleParts.push(`<span>Timestamp: ${fmtDateTime(step.timestamp)}</span>`);
+      }
+      detailSub.innerHTML = subtitleParts.join('');
+
+      // Handle screenshot button with download
+      if(step.screenshot){
+        screenshotBtn.style.display='inline-flex';
+        screenshotBtn.onclick=()=> downloadMedia(step.screenshot, 'screenshot', step.name || `step_${labelIndex}`);
+      }else{
+        screenshotBtn.style.display='none';
+        screenshotBtn.onclick=null;
+      }
+      
+      // Handle video button with download
+      if(step.video){
+        videoBtn.style.display='inline-flex';
+        videoBtn.onclick=()=> downloadMedia(step.video, 'video', step.name || `step_${labelIndex}`);
+      }else{
+        videoBtn.style.display='none';
+        videoBtn.onclick=null;
+      }
+
+      // Populate Elements Tab with enhanced styling
+      let html='';
+      if(step.elements && step.elements.length){
+        html += '<div class="table-container"><table class="tbl"><thead><tr><th>LOCATOR NAME</th><th>VALUE TYPE</th><th>LOCATOR VALUE</th><th>STATUS</th></tr></thead><tbody>';
+        step.elements.forEach(el=>{
+          const statusClass = (el.status === 'USED') ? 'used' : 'not-used';
+          const statusDisplay = el.status || 'NOT_USED';
+          html += `<tr>
+          <td><strong>${sanitize(el.locatorType)}</strong></td>
+          <td><span style="background:#f1f5f9;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;color:#64748b;">${sanitize(el.valueType)}</span></td>
+          <td><code style="background:#f1f5f9;padding:6px 10px;border-radius:6px;font-size:12px;font-family:monospace;color:#1e293b;">${sanitize(el.locatorValue)}</code></td>
+          <td><span class="status-badge-cell ${statusClass}">${statusDisplay}</span></td>
+        </tr>`;
+        });
+        html += '</tbody></table></div>';
+        updateTabBadge('elementsBadge', step.elements.length);
+      }else{
+        html = '<div class="table-container"><div class="empty-state"><div class="empty-icon">📦</div><p class="empty-text">No elements available for this step</p></div></div>';
+        updateTabBadge('elementsBadge', 0);
+      }
+      elementsTab.innerHTML = html;
+
+      // Populate Variables Tab with enhanced styling
+      if(step.variables && step.variables.length){
+        let vhtml='<div class="table-container"><table class="tbl"><thead><tr><th>NAME</th><th>TYPE</th><th>VALUE</th></tr></thead><tbody>';
+        step.variables.forEach(v=>{
+          vhtml += `<tr>
+          <td><strong style="color:#6424b8;">${sanitize(v.name)}</strong></td>
+          <td><span style="background:linear-gradient(135deg,#6424b8,#8b4fd9);color:white;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;">${sanitize(v.type)}</span></td>
+          <td><code style="background:#1e293b;color:#10b981;padding:6px 12px;border-radius:6px;font-size:12px;font-family:monospace;font-weight:600;">${sanitize(v.value)}</code></td>
+        </tr>`;
+        });
+        vhtml+='</tbody></table></div>';
+        varsTab.innerHTML=vhtml;
+        updateTabBadge('variablesBadge', step.variables.length);
+      }else{
+        varsTab.innerHTML='<div class="table-container"><div class="empty-state"><div class="empty-icon">📝</div><p class="empty-text">No variables available for this step</p></div></div>';
+        updateTabBadge('variablesBadge', 0);
+      }
+
+      // Show result message with enhanced log container
+      const logText = step.log || step.description || 'No logs / exception captured for this step.';
+      logsTab.innerHTML = `<div class="table-container" style="padding:24px 32px;"><div class="log-pre">${sanitize(logText)}</div></div>`;
+
+      detailTabs.forEach(t=>{
+        t.classList.toggle('active', t.dataset.tab==='elementsTab');
+      });
+      elementsTab.classList.add('active');
+      varsTab.classList.remove('active');
+      logsTab.classList.remove('active');
+
+      stepsPanel.classList.remove('show');
+      stepDetailPanel.classList.add('show');
+      overlay.classList.add('show');
+    }
+
+    // Helper function to get status color class
+    function getStatusColorClass(status) {
+      const s = (status || '').toString().toUpperCase();
+      if (s.startsWith('PASS')) return 'status-passed';
+      if (s.startsWith('FAIL')) return 'status-failed';
+      if (s.includes('WARN')) return 'status-warning';
+      if (s.includes('SKIP')) return 'status-skipped';
+      return 'status-passed';
+    }
+
+    // Helper function to update tab badges
+    function updateTabBadge(badgeId, count) {
+      const badge = document.getElementById(badgeId);
+      if (!badge) return;
+      
+      if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // Download media function (screenshot or video)
+    function downloadMedia(url, type, stepName) {
+      if (!url) {
+        alert(`No ${type} available for this step.`);
+        return;
+      }
+
+      // Create safe filename
+      const safeStepName = (stepName || 'step').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const timestamp = new Date().getTime();
+      const extension = type === 'screenshot' ? 'png' : 'mp4';
+      const filename = `${safeStepName}_${type}_${timestamp}.${extension}`;
+
+      // Check if it's an S3 URL or local path
+      const isS3URL = url.includes('amazonaws.com') || url.startsWith('http://') || url.startsWith('https://');
+      
+      if (isS3URL) {
+        // For S3 URLs with authentication, fetch and download
+        fetch(url)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Download failed');
+            }
+            return response.blob();
+          })
+          .then(blob => {
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+            showToast(`${type === 'screenshot' ? '📷 Screenshot' : '🎥 Video'} downloaded successfully!`);
+          })
+          .catch(error => {
+            console.error('Download error:', error);
+            // Fallback: Open in new tab
+            window.open(url, '_blank');
+            showToast(`${type === 'screenshot' ? '📷 Screenshot' : '🎥 Video'} opened in new tab!`);
+          });
+      } else {
+        // For local paths, use direct download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast(`${type === 'screenshot' ? '📷 Screenshot' : '🎥 Video'} download started!`);
+      }
+    }
+
+    // Toast notification function
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        background: linear-gradient(135deg, #6424b8 0%, #8b4fd9 100%);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(100, 36, 184, 0.3);
+        font-weight: 600;
+        font-size: 14px;
+        z-index: 10000;
+        animation: slideInUp 0.3s ease;
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideOutDown 0.3s ease';
+        setTimeout(() => document.body.removeChild(toast), 300);
+      }, 3000);
+    }
+
+    function closeStepDetail(){
+      stepDetailPanel.classList.remove('show');
+      currentStepDetailCtx=null;
+      if(currentStepsCtx){
+        stepsPanel.classList.add('show');
+      }else{
+        overlay.classList.remove('show');
+      }
+    }
+
+    detailTabs.forEach(tab=>{
+      tab.addEventListener('click',()=>{
+        detailTabs.forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        const id = tab.dataset.tab;
+        [elementsTab,varsTab,logsTab].forEach(el=>{
+          el.classList.toggle('active', el.id===id);
+        });
+      });
+    });
+
+    closeStepsBtn.addEventListener('click',closeStepsPanel);
+    closeDetailBtn.addEventListener('click',closeStepDetail);
+    overlay.addEventListener('click',e=>{
+      if(e.target===overlay){
+        if(currentStepDetailCtx) closeStepDetail();
+        else if(currentStepsCtx) closeStepsPanel();
+      }
+    });
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape'){
+        if(currentStepDetailCtx) closeStepDetail();
+        else if(currentStepsCtx) closeStepsPanel();
+        else overlay.classList.remove('show');
+      }
+    });
+
+    /* ---------- API Load (Execution ID + License ID) ---------- */
+    /* ---------- Loading Helper ---------- */
+    function showLoading(text, subtext){
+      const overlay = document.getElementById('loadingOverlay');
+      const loadingText = document.getElementById('loadingText');
+      const loadingSubtext = document.getElementById('loadingSubtext');
+      const loadingPercentage = document.getElementById('loadingPercentage');
+      const progressBar = document.getElementById('progressBar');
+      
+      loadingText.textContent = text;
+      loadingSubtext.textContent = subtext;
+      loadingPercentage.textContent = '0%';
+      progressBar.style.width = '0%';
+      overlay.classList.add('show');
+      
+      return {
+        updateProgress: (percent) => {
+          loadingPercentage.textContent = Math.round(percent) + '%';
+          progressBar.style.width = percent + '%';
+        },
+        hide: () => {
+          overlay.classList.remove('show');
+        }
+      };
+    }
+
+    /* ---------- API Load (Execution ID + License ID) ---------- */
+    async function fetchExecutionFromApi(licenseId, executionId){
+      const loader = showLoading('Loading Report', 'Initializing...');
+      const url = `https://app.v3.fireflink.com/reports/optimize/v1/internal/reports/execution/${encodeURIComponent(executionId)}?licenseId=${encodeURIComponent(licenseId)}`;
+      
+      try{
+        loader.updateProgress(10);
+        document.getElementById('loadingSubtext').textContent = 'Connecting to server...';
+        
+        await new Promise(resolve => setTimeout(resolve, 300));
+        loader.updateProgress(25);
+        document.getElementById('loadingSubtext').textContent = 'Fetching execution data...';
+        
+        const res = await fetch(url, {
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        loader.updateProgress(50);
+        document.getElementById('loadingSubtext').textContent = 'Processing response...';
+        
+        if(!res.ok){
+          throw new Error(`HTTP ${res.status}`);
+        }
+        
+        loader.updateProgress(70);
+        const data = await res.json();
+        
+        loader.updateProgress(85);
+        document.getElementById('loadingSubtext').textContent = 'Normalizing data...';
+        
+        executions = normalizeInput(data);
+        
+        if(!executions.length){
+          loader.hide();
+          alert('API call succeeded, but no executions were found in the response.');
+          return;
+        }
+        
+        loader.updateProgress(95);
+        document.getElementById('loadingSubtext').textContent = 'Rendering report...';
+        
+        renderExecutions();
+        
+        loader.updateProgress(100);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        loader.hide();
+        
+        // Hide the input fields and generate button after successful API call
+        hideInputControls();
+        
+      }catch(err){
+        console.error('API fetch error:', err);
+        loader.hide();
+        alert('Unable to load execution from API. Check console for details.');
+      }
+    }
+    
+    /* ---------- Hide Input Controls After Report Generation ---------- */
+    function hideInputControls(){
+      // Hide license ID input
+      const licenseInput = document.getElementById('licenseIdInput');
+      if(licenseInput){
+        licenseInput.style.display = 'none';
+      }
+      
+      // Hide execution ID input
+      const executionInput = document.getElementById('executionIdInput');
+      if(executionInput){
+        executionInput.style.display = 'none';
+      }
+      
+      // Hide generate report button
+      const generateBtn = document.getElementById('loadApiBtn');
+      if(generateBtn){
+        generateBtn.style.display = 'none';
+      }
+    }
+
+    loadApiBtn.addEventListener('click', ()=>{
+      const licenseId = (licenseIdInput.value || '').trim();
+      const executionId = (executionIdInput.value || '').trim();
+      if(!licenseId || !executionId){
+        alert('Please enter both License ID and Execution ID.');
+        return;
+      }
+      fetchExecutionFromApi(licenseId, executionId);
+    });
+
+    ['licenseIdInput','executionIdInput'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el){
+        el.addEventListener('keydown', e=>{
+          if(e.key === 'Enter'){
+            loadApiBtn.click();
+          }
+        });
+      }
+    });
+    
+    /* ---------- Listen for messages from parent window (selector page) ---------- */
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'FILL_AND_GENERATE') {
+        const { licenseId, executionId } = event.data;
+        
+        // Fill in the input fields
+        if (licenseIdInput && executionIdInput) {
+          licenseIdInput.value = licenseId;
+          executionIdInput.value = executionId;
+          
+          // Trigger the generate button click
+          if (loadApiBtn) {
+            setTimeout(() => {
+              loadApiBtn.click();
+              // Send confirmation back to parent
+              window.parent.postMessage({ type: 'REPORT_GENERATED' }, '*');
+            }, 100);
+          }
+        }
+      }
+    });
+
+    /* ---------- Export ---------- */
+    function buildRowsForExecution(ex){
+      const rows=[];
+      rows.push(['Execution',ex.title]);
+      rows.push(['Browser',ex.browser,ex.version]);
+      rows.push(['Machine',ex.machineName]);
+      rows.push(['Platform',ex.platformName || ex.envName]);
+      rows.push(['Executed On',fmtDateTime(ex.executedOn)]);
+      rows.push([]);
+      ex.modules.forEach(m=>{
+        rows.push(['Module',m.moduleName]);
+        (m.testcases||[]).forEach(tc=>{
+          rows.push(['','Testcase',tc.name,statusText(tc.status),fmtDateTime(tc.start),fmtDateTime(tc.end),calcDuration(tc.start,tc.end)]);
+          (tc.steps||[]).forEach((st,i)=>{
+            rows.push(['','','Step '+(i+1),st.name||st.description||st.nlp,statusText(st.status||tc.status),fmtDateTime(st.timestamp)]);
+          });
+        });
+        rows.push([]);
+      });
+      return rows;
+    }
+
+    exportBtn.addEventListener('click', async ()=>{
+      if(!executions.length){
+        alert('No executions loaded.');
+        return;
+      }
+      
+      const loader = showLoading('Preparing Download', 'Collecting data...');
+      
+      try{
+        await new Promise(resolve => setTimeout(resolve, 200));
+        loader.updateProgress(15);
+        
+        loader.updateProgress(30);
+        document.getElementById('loadingSubtext').textContent = 'Building workbook...';
+        
+        const wb = XLSX.utils.book_new();
+        
+        for(let i = 0; i < executions.length; i++){
+          const ex = executions[i];
+          loader.updateProgress(30 + (i / executions.length) * 40);
+          document.getElementById('loadingSubtext').textContent = `Processing execution ${i+1} of ${executions.length}...`;
+          
+          const sheetName = (ex.browser || 'Run') + '_' + (i+1);
+          const aoa = buildRowsForExecution(ex);
+          const ws = XLSX.utils.aoa_to_sheet(aoa);
+          ws['!cols']=[{wpx:120},{wpx:160},{wpx:260},{wpx:100},{wpx:140},{wpx:140},{wpx:90}];
+          XLSX.utils.book_append_sheet(wb,ws,sheetName.substring(0,28));
+          
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        loader.updateProgress(75);
+        document.getElementById('loadingSubtext').textContent = 'Generating file...';
+        
+        const wbout = XLSX.write(wb,{bookType:'xlsx',type:'binary'});
+        
+        loader.updateProgress(85);
+        document.getElementById('loadingSubtext').textContent = 'Creating download...';
+        
+        const s2ab=s=>{
+          const buf=new ArrayBuffer(s.length);
+          const view=new Uint8Array(buf);
+          for(let i=0;i<s.length;i++) view[i]=s.charCodeAt(i)&0xFF;
+          return buf;
+        };
+        
+        const blob=new Blob([s2ab(wbout)],{type:'application/octet-stream'});
+        const url=URL.createObjectURL(blob);
+        
+        // Get custom report name or use default
+        let fileName = (reportNameInput.value || '').trim();
+        
+        if(!fileName){
+          // Default name with timestamp
+          const now = new Date();
+          const timestamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+          fileName = `FireFlink_Report_${timestamp}`;
+        }
+        
+        // Ensure .xlsx extension
+        if(!fileName.toLowerCase().endsWith('.xlsx')){
+          fileName += '.xlsx';
+        }
+        
+        loader.updateProgress(95);
+        document.getElementById('loadingSubtext').textContent = 'Starting download...';
+        
+        const a=document.createElement('a');
+        a.href=url;
+        a.download=fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        
+        loader.updateProgress(100);
+        await new Promise(resolve => setTimeout(resolve, 400));
+        loader.hide();
+        
+      }catch(err){
+        console.error('Export error:', err);
+        loader.hide();
+        alert('Error creating export file. Check console for details.');
+      }
+    });
+
+    /* ---------- Download HTML Report feature ---------- */
+    downloadHtmlBtn.addEventListener('click', async ()=>{
+      if(!executions.length){
+        alert('No executions loaded. Please load data first.');
+        return;
+      }
+
+      const loader = showLoading('Preparing HTML Download', 'Collecting data...');
+
+      try{
+        await new Promise(resolve => setTimeout(resolve, 200));
+        loader.updateProgress(20);
+        
+        document.getElementById('loadingSubtext').textContent = 'Cloning document...';
+        
+        // Clone the current document
+        const doc = document.documentElement.cloneNode(true);
+        
+        loader.updateProgress(40);
+        document.getElementById('loadingSubtext').textContent = 'Embedding data...';
+        
+        // Find the last script tag
+        const scripts = doc.getElementsByTagName('script');
+        const lastScript = scripts[scripts.length - 1];
+        
+        // Check if filtered download is enabled
+        const downloadFilteredCheckbox = document.getElementById('downloadFilteredCheckbox');
+        const useFiltered = downloadFilteredCheckbox && downloadFilteredCheckbox.checked;
+        
+        // Use filtered data if checkbox is checked, otherwise use all executions
+        const dataToEmbed = useFiltered ? buildFilteredExecutionsForPreview() : executions;
+        
+        if(useFiltered && dataToEmbed.length === 0){
+          loader.hide();
+          alert('No executions are expanded/filtered. Please expand at least one execution card to download filtered data.');
+          return;
+        }
+        
+        // Create data injection with selected executions
+        const embeddedData = JSON.stringify(dataToEmbed, null, 2);
+        const timestamp = new Date().toLocaleString();
+        const filterNote = useFiltered ? ' (Filtered)' : '';
+        
+        const dataInjection = `
+    
+    /* ========== EMBEDDED EXECUTION DATA ========== */
+    /* Report generated: ${timestamp}${filterNote} */
+    const EMBEDDED_EXECUTIONS = ${embeddedData};
+    
+    // Initialize with embedded data
+    executions = EMBEDDED_EXECUTIONS;
+    
+    // Hide API controls in offline mode
+    window.addEventListener('DOMContentLoaded', function() {
+      const controlEls = document.querySelectorAll('.id-input, #loadApiBtn, #downloadHtmlBtn, #downloadFilteredCheckbox, #reportNameInput, #loadingOverlay');
+      controlEls.forEach(el => {
+        if(el.tagName === 'LABEL') el.style.display = 'none';
+        else el.style.display = 'none';
+      });
+      
+      // Also hide the label containing the checkbox
+      const label = document.querySelector('label[style*="display:flex"]');
+      if(label) label.style.display = 'none';
+      
+      const subtitle = document.querySelector('.subtitle');
+      if(subtitle) {
+        subtitle.textContent = 'Offline Report${filterNote} - Generated: ${timestamp}';
+      }
+    });
+    /* ========== END EMBEDDED DATA ========== */
+`;
+        
+        loader.updateProgress(60);
+        document.getElementById('loadingSubtext').textContent = 'Generating HTML...';
+        
+        // Insert before the final renderExecutions() call
+        const scriptContent = lastScript.textContent;
+        const renderLine = '// initial render (normal or preview)\n    renderExecutions();';
+        
+        if(scriptContent.includes(renderLine)){
+          lastScript.textContent = scriptContent.replace(renderLine, dataInjection + '\n    ' + renderLine);
+        }
+        
+        loader.updateProgress(80);
+        document.getElementById('loadingSubtext').textContent = 'Creating download...';
+        
+        // Convert to HTML string
+        const htmlString = '<!DOCTYPE html>\n' + doc.outerHTML;
+        
+        // Create and download file
+        const blob = new Blob([htmlString], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        // Get custom report name or use default
+        let fileName = (reportNameInput.value || '').trim();
+        
+        if(!fileName){
+          const now = new Date();
+          const timestamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+          fileName = `FireFlink_Report${useFiltered ? '_Filtered' : ''}_${timestamp}`;
+        }
+        
+        if(!fileName.toLowerCase().endsWith('.html')){
+          fileName += '.html';
+        }
+        
+        loader.updateProgress(95);
+        document.getElementById('loadingSubtext').textContent = 'Starting download...';
+        
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        loader.updateProgress(100);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        loader.hide();
+        
+      }catch(err){
+        console.error('Download error:', err);
+        loader.hide();
+        alert('Error downloading HTML report. Check console for details.');
+      }
+    });
+
+    // initial render (normal or preview)
+    renderExecutions();
+  </script>
+</body>
+</html>
