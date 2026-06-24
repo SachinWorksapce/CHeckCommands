@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FireFlink HTML Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #FFF9E6;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #9D2235 0%, #8B1F2E 100%);
+            padding: 20px 30px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(157, 34, 53, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo svg {
+            width: 35px;
+            height: 35px;
+        }
+
+        .header-title-section {
+            color: white;
+        }
+
+        .header-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .header-inputs {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .input-field {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            min-width: 150px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8B1F2E 0%, #6B1722 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 31, 46, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 31, 46, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #8B1F2E;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            gap: 20px;
+            padding: 0 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Left Sidebar - Execution Cards */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .exec-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .exec-card:hover {
+            border-color: #9D2235;
+            box-shadow: 0 4px 16px rgba(157, 34, 53, 0.2);
+            transform: translateX(5px);
+        }
+
+        .exec-card.active {
+            border-color: #9D2235;
+            border-width: 3px;
+            background: #FFF9F0;
+        }
+
+        .exec-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .browser-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: #F3F4F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .exec-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .exec-card-details {
+            font-size: 11px;
+            color: #6B7280;
+            margin-bottom: 10px;
+        }
+
+        .pie-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 15px auto;
+        }
+
+        .pie-chart {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .pie-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .pie-center-number {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1F2937;
+        }
+
+        .pie-center-label {
+            font-size: 10px;
+            color: #6B7280;
+            text-transform: uppercase;
+        }
+
+        .stats-list {
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+
+        .stat-dot.pass { background: #10B981; }
+        .stat-dot.fail { background: #EF4444; }
+        .stat-dot.warn { background: #F59E0B; }
+        .stat-dot.skip { background: #9CA3AF; }
+
+        .stat-value {
+            font-weight: 600;
+        }
+
+        .exec-footer {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #E5E7EB;
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        /* Right Content - Modules */
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .modules-container {
+            background: white;
+            border: 4px solid #F59E0B;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.15);
+        }
+
+        .modules-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modules-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .modules-subtitle {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .filter-dropdown {
+            padding: 8px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .module {
+            margin-bottom: 25px;
+        }
+
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .module-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .module-stats {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .filter-pills {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .filter-pill {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-pill.all {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+
+        .filter-pill.pass {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .filter-pill.fail {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .filter-pill.warn {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .filter-pill.skip {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+
+        .testcase {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+        .testcase:hover {
+            background: #F9FAFB;
+            border-left-color: #9D2235;
+        }
+
+        .testcase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .testcase-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .testcase-status {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .testcase-status.passed {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .testcase-status.failed {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .testcase-status.warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .testcase-details {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .subtestcase {
+            margin-left: 20px;
+            border-left: 2px solid #E5E7EB;
+            padding-left: 12px;
+            margin-top: 8px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #9D2235;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #6B7280;
+            line-height: 1;
+        }
+
+        .modal-description {
+            color: #6B7280;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .json-textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 249, 230, 0.95);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #E5E7EB;
+            border-top-color: #9D2235;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                display: flex;
+                gap: 15px;
+                overflow-x: auto;
+            }
+
+            .exec-card {
+                min-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading Report Data...</div>
+        </div>
+    </div>
+
+    <!-- JSON Input Modal -->
+    <div class="modal" id="jsonModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📋 Load JSON Data</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <p class="modal-description">Paste your execution JSON data below:</p>
+            <textarea class="json-textarea" id="jsonInput" placeholder='Paste JSON here... Example: {"responseCode": 200, "responseObject": {...}}'></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-green" id="loadJsonBtn">✅ Load Data</button>
+                <button class="btn btn-secondary" id="cancelBtn">❌ Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 3L4 14H12L11 21L20 10H12L13 3Z" fill="#9D2235" stroke="#9D2235" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="header-title-section">
+                    <div class="header-title">FireFlink HTML Report</div>
+                    <div class="header-subtitle">Modules · Testcases · Step Diagnostics</div>
+                </div>
+            </div>
+
+            <div class="header-inputs">
+                <input type="text" class="input-field" id="licenseInput" placeholder="LIC24526">
+                <input type="text" class="input-field" id="execInput" placeholder="EXEC13736">
+                <button class="btn btn-primary" id="generateBtn">
+                    <span>📄</span> Generate Report
+                </button>
+                <button class="btn btn-green" id="openJsonBtn">
+                    <span>📋</span> Load from JSON
+                </button>
+            </div>
+
+            <div class="header-inputs">
+                <input type="text" class="input-field" id="reportName" placeholder="Report Name (optional)">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="downloadFiltered">
+                    <span>Download only expanded/filtered</span>
+                </label>
+                <button class="btn btn-secondary" id="downloadBtn">
+                    <span>📥</span> Download HTML
+                </button>
+                <button class="btn btn-secondary" id="excelBtn">
+                    <span>📊</span> Export Excel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar" id="sidebar"></div>
+
+        <!-- Right Content -->
+        <div class="content">
+            <div class="modules-container">
+                <div class="modules-header">
+                    <div>
+                        <div class="modules-title">Modules · <span id="moduleCount">0</span> modules</div>
+                    </div>
+                    <select class="filter-dropdown" id="filterDropdown">
+                        <option value="all">All Modules</option>
+                        <option value="pass">Passed Only</option>
+                        <option value="fail">Failed Only</option>
+                        <option value="warn">Warning Only</option>
+                    </select>
+                </div>
+                <div id="modulesContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== UTILITY FUNCTIONS =====
+function sanitize(v){ if(v===null || v===undefined) return ''; return String(v); }
+        function getBrowserIcon(browserName) {
+  const b = (browserName || "").toLowerCase();
+
+  if (b.includes("fireflink"))
+    return { icon: "data:image/svg+xml;base64," + btoa('<svg viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.30815 2.44586C8.00129 2.63411 7.75562 2.75272 7.509 2.87602C6.58748 3.36737 5.7272 3.79754 4.80568 4.28795C4.74167 4.32431 4.68966 4.37863 4.6562 4.44421C4.62274 4.5098 4.60923 4.58376 4.61736 4.65693V23.2755C4.61736 23.5212 4.55624 23.7057 4.31057 23.7669C3.85464 23.9552 3.36009 24.0312 2.86866 23.9884C2.37722 23.9457 1.90328 23.7854 1.48672 23.5212C1.18046 23.3059 0.919692 23.0323 0.7194 22.716C0.519108 22.3997 0.383245 22.047 0.319539 21.6782C0.16509 20.682 0.102006 19.6737 0.131213 18.666C0.0700298 13.7497 0.00884184 8.77315 0.00884184 3.85683C-0.0391441 3.07511 0.108741 2.29379 0.439038 1.58366C0.717224 0.990161 1.19816 0.515478 1.79523 0.245067C2.39231 -0.0253429 3.06627 -0.0737303 3.69584 0.108649C4.56928 0.371444 5.39798 0.764987 6.15361 1.27586C6.82945 1.64484 7.50528 2.01287 8.11994 2.38186C8.18583 2.32255 8.24697 2.38373 8.30815 2.44586Z" fill="#8b2c1f"/><path d="M8.42587 21.3723V16.0258C8.42442 15.9536 8.44083 15.8821 8.47367 15.8177C8.50651 15.7533 8.55473 15.6981 8.61408 15.6569C10.7037 14.4887 12.7934 13.3215 14.8209 12.1543C15.3734 11.8465 15.9269 11.5397 16.5406 11.1707C16.1854 10.9425 15.8159 10.7372 15.4346 10.556C14.5131 10.0026 13.5917 9.51123 12.6701 8.95587C12.6247 8.92503 12.5711 8.90853 12.5162 8.90853C12.4613 8.90853 12.4077 8.92503 12.3623 8.95587C11.1951 9.6929 10.0891 10.3678 8.92098 11.1067C8.8598 11.1067 8.85982 11.1679 8.79769 11.1679V7.2352C8.79594 7.15413 8.81183 7.07365 8.84434 6.99937C8.87686 6.92508 8.92516 6.85876 8.9859 6.80504C10.0307 6.06801 11.0746 5.39311 12.0583 4.6542C12.1149 4.62396 12.1781 4.60815 12.2422 4.60815C12.3064 4.60815 12.3697 4.62396 12.4263 4.6542C13.8382 5.45335 15.3141 6.31368 16.7279 7.11188C17.7106 7.66442 18.6943 8.21789 19.7401 8.77042C20.488 9.15981 21.1072 9.75743 21.5228 10.4911C21.7846 10.9685 21.8898 11.5161 21.8236 12.0566C21.7574 12.5971 21.5232 13.1031 21.1539 13.5032C20.6682 14.0556 20.0849 14.5138 19.4332 14.8549C18.0213 15.654 16.6677 16.5144 15.2549 17.3126C13.473 18.3574 11.7524 19.3401 9.97051 20.3849C9.4095 20.7577 8.91722 21.0607 8.42587 21.3723Z" fill="#8b2c1f"/></svg>') };
+
+  if (b.includes("chrome"))
+    return { icon: "https://www.google.com/chrome/static/images/chrome-logo.svg" };
+
+  if (b.includes("firefox"))
+    return { icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Firefox_logo%2C_2019.png/960px-Firefox_logo%2C_2019.png?20200417133504" };
+
+  if (b.includes("edge"))
+    return { icon: "https://static.wikia.nocookie.net/logopedia/images/4/4d/Microsoft_Edge_%282019%29.svg/revision/latest?cb=20210706013511" };
+
+  if (b.includes("safari"))
+    return { icon: "https://upload.wikimedia.org/wikipedia/commons/5/52/Safari_browser_logo.svg" };
+
+  return { icon: "" };
+}
+
+    function fmtTS(ts){
+      if(!ts) return '';
+      const d = new Date(ts);
+      if(isNaN(d)) return ts;
+      const z=n=>String(n).padStart(2,'0');
+      return `${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}`;
+    }
+    function fmtDateTime(ts){
+      if(!ts) return '';
+      const d=new Date(ts);
+      if(isNaN(d)) return ts;
+      const z=n=>String(n).padStart(2,'0');
+      return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())} ${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}`;
+    }
+    function calcDuration(s,e){
+      if(!s||!e) return '';
+      const a=new Date(s), b=new Date(e);
+      if(isNaN(a)||isNaN(b)) return '';
+      const diff=Math.max(0,b-a);
+      const totalSec=Math.floor(diff/1000);
+      const hh=Math.floor(totalSec/3600);
+      const mm=Math.floor((totalSec%3600)/60);
+      const ss=totalSec%60;
+      const z=n=>String(n).padStart(2,'0');
+      return `${z(hh)}:${z(mm)}:${z(ss)}`;
+    }
+    function statusClass(status){
+      const s=(status||'').toString().toUpperCase();
+      if(s.startsWith('PASS')) return 'status-pass';
+      if(s.startsWith('FAIL')) return 'status-fail';
+      if(s.includes('WARN')) return 'status-warn';
+      if(s.includes('SKIP')) return 'status-skip';
+      return 'status-pass';
+    }
+    function statusText(status){
+      const s=(status||'').toString().toUpperCase();
+      if(s.startsWith('PASS')) return 'Passed';
+      if(s.startsWith('FAIL')) return 'Failed';
+      if(s.includes('WARN')) return 'Warning';
+      if(s.includes('SKIP')) return 'Skipped';
+      return status || '';
+    }
+
+    /* ---------- Normalisation ---------- */
+
+// ===== DATA NORMALIZATION FUNCTIONS =====
+function normStep(rawStep){
+      if(!rawStep) return {};
+      const sr = rawStep.stepResult || rawStep;
+
+      const status = (rawStep.status || sr.status || '').toString();
+      const name   = sr.name || sr.title || rawStep.title || rawStep.name || '';
+      const nlp    = rawStep.nlpName || sr.nlpName || '';
+      const description = sr.description || rawStep.description || sr.message || '';
+      const timestamp   = rawStep.executedOn || rawStep.timestamp || sr.executedOn || '';
+      const logMsg      = sr.message || rawStep.message || '';
+
+      const screenshot = sr.screenshotURL || rawStep.screenshotURL || rawStep.screenshotPath || sr.screenshotPath || rawStep.screenshot || null;
+      const video      = sr.videoURL || rawStep.videoURL || rawStep.video || null;
+
+      // Try to get inputs from both step level and stepResult level
+      const rawInputs = rawStep.stepInputs || sr.stepInputs || [];
+      const returnVar = rawStep.stepReturn || sr.stepReturn || null;
+      const variables = [];
+
+      const noisyNames = new Set(['element','elementName','elementType','ifCheckPointIsFailed','ifCheckPointIsFailedAndStopScriptExecution']);
+      if(Array.isArray(rawInputs)){
+        rawInputs.forEach(v=>{
+          const nm = v.name || v.reference || '';
+          if(noisyNames.has(nm)) return;
+          const ref = v.reference || '';
+          if(ref === 'ELEMENT') return;
+          const row = {
+            name: nm || (ref && ref!=='GLOBAL'?ref:''),
+            type: v.type || (ref || ''),
+            value: v.actualValue ?? v.value ?? ''
+          };
+          if(row.name || row.value) variables.push(row);
+        });
+      }
+      if(returnVar && (returnVar.name || returnVar.value)){
+        variables.unshift({
+          name: returnVar.name || '',
+          type: returnVar.type || 'GLOBAL',
+          value: returnVar.value ?? ''
+        });
+      }
+
+      // Try to get elements from both step level and stepResult level
+      const rawElements = rawStep.elementDetails || sr.elementDetails || [];
+      const elements = [];
+      if(Array.isArray(rawElements)){
+        rawElements.forEach(e=>{
+          const locs = e.locators || [];
+          if(Array.isArray(locs)){
+            locs.forEach(l=>{
+              elements.push({
+                locatorType: l.name || l.locatorType || '',
+                valueType: l.type || l.valueType || '',
+                locatorValue: l.actualValue || l.value || '',
+                status: l.status || ''
+              });
+            });
+          }
+        });
+      }
+
+      // NEW: Detect step type for special handling
+      const stepType = rawStep.stepType || '';
+      const type = rawStep.type || '';
+      const isGroup = type === 'Group' || stepType === 'StepGroup';
+      const isCondition = stepType === 'Condition';
+
+      // NEW: Enhanced children handling for step groups
+      let children = null;
+      
+      // Priority 1: stepResults array (most common for step groups)
+      if(rawStep.stepResults && Array.isArray(rawStep.stepResults) && rawStep.stepResults.length > 0){
+        children = rawStep.stepResults.map(normStep);
+      } 
+      // Priority 2: stepResult.stepResults
+      else if(sr.stepResults && Array.isArray(sr.stepResults) && sr.stepResults.length > 0){
+        children = sr.stepResults.map(normStep);
+      } 
+      // Priority 3: children array
+      else if(Array.isArray(rawStep.children) && rawStep.children.length > 0){
+        children = rawStep.children.map(normStep);
+      }
+
+      return {
+        name,
+        nlp,
+        description,
+        timestamp,
+        status,
+        log: logMsg,
+        screenshot,
+        video,
+        variables,
+        elements,
+        children,
+        stepType,      // NEW: For identifying conditions, loops, etc.
+        isGroup,       // NEW: For identifying step groups
+        isCondition,   // NEW: For special formatting
+        raw: rawStep
+      };
+    }
+
+function deriveStatusFromSteps(steps){
+      const list = (steps||[]).map(s => (s.status||'').toString().toUpperCase());
+      if(list.some(s=>s.startsWith('FAIL'))) return 'FAIL';
+      if(list.some(s=>s.includes('WARN'))) return 'WARNING';
+      if(list.some(s=>s.includes('SKIP'))) return 'SKIPPED';
+      if(list.length) return 'PASS';
+      return '';
+    }
+
+function convertScript(sc){
+      // First check if there's a 'steps' field directly on the script
+      const directSteps = Array.isArray(sc.steps) ? sc.steps : [];
+      const stepsRaw = Array.isArray(sc.stepResults) ? sc.stepResults : directSteps;
+      let steps = [];
+      let preSteps = [];
+      let postSteps = [];
+      
+      // Check if script has children with pre/post conditions
+      if(Array.isArray(sc.children)){
+        sc.children.forEach(child => {
+          const childType = (child.type || '').toString().toLowerCase();
+          const childTitle = (child.title || child.name || '').toString().toLowerCase();
+          
+          if(childType === 'precondition' || childTitle === 'preconditions'){
+            // Extract precondition steps
+            if(Array.isArray(child.children)){
+              child.children.forEach(step => {
+                if(Array.isArray(step.children)){
+                  step.children.forEach(s => preSteps.push(normStep(s)));
+                } else {
+                  preSteps.push(normStep(step));
+                }
+              });
+            }
+          } else if(childType === 'postcondition' || childTitle === 'postconditions'){
+            // Extract postcondition steps
+            if(Array.isArray(child.children)){
+              child.children.forEach(step => {
+                if(Array.isArray(step.children)){
+                  step.children.forEach(s => postSteps.push(normStep(s)));
+                } else {
+                  postSteps.push(normStep(step));
+                }
+              });
+            }
+          } else {
+            // Regular steps
+            if(Array.isArray(child.children)){
+              child.children.forEach(s => steps.push(normStep(s)));
+            } else {
+              steps.push(normStep(child));
+            }
+          }
+        });
+      }
+      
+      // NEW: Handle cascaded preConditions from preConditions.stepResults field
+      if(sc.preConditions && sc.preConditions.stepResults && Array.isArray(sc.preConditions.stepResults)){
+        // These are step groups that were cascaded from module level
+        sc.preConditions.stepResults.forEach(stepGroup => {
+          preSteps.push(normStep(stepGroup));
+        });
+      }
+      
+      // NEW: Handle cascaded postConditions from postConditions.stepResults field
+      if(sc.postConditions && sc.postConditions.stepResults && Array.isArray(sc.postConditions.stepResults)){
+        sc.postConditions.stepResults.forEach(stepGroup => {
+          postSteps.push(normStep(stepGroup));
+        });
+      }
+      
+      // Also check for preConditions and postConditions fields (array format)
+      if(Array.isArray(sc.preConditions) && sc.preConditions.length > 0){
+        sc.preConditions.forEach(pc => {
+          if(Array.isArray(pc.steps)){
+            pc.steps.forEach(s => preSteps.push(normStep(s)));
+          } else if(Array.isArray(pc.children)){
+            pc.children.forEach(s => preSteps.push(normStep(s)));
+          }
+        });
+      }
+      
+      if(Array.isArray(sc.postConditions) && sc.postConditions.length > 0){
+        sc.postConditions.forEach(pc => {
+          if(Array.isArray(pc.steps)){
+            pc.steps.forEach(s => postSteps.push(normStep(s)));
+          } else if(Array.isArray(pc.children)){
+            pc.children.forEach(s => postSteps.push(normStep(s)));
+          }
+        });
+      }
+      
+      // Add steps from stepResults/steps if not found in children
+      if(steps.length === 0 && stepsRaw.length > 0){
+        steps = (stepsRaw||[]).map(normStep);
+      }
+      
+      const status = (sc.status || deriveStatusFromSteps(steps) || '').toString();
+      const name   = sc.name || sc.title || 'Testcase';
+      const start  = sc.executionStartTime || sc.startTime || sc.executedOn || sc.startTimestamp || '';
+      const end    = sc.executionEndTime || sc.endTime || sc.executionEndTimestamp || '';
+      const kind   = sc.scriptType || sc.type || '';
+      
+      return { 
+        name, 
+        status, 
+        start, 
+        end, 
+        type:kind, 
+        steps, 
+        preConditionSteps: preSteps,
+        postConditionSteps: postSteps,
+        raw:sc 
+      };
+    }
+
+function normalizeInput(inp){
+      const resp = inp.responseObject || inp;
+      const machines = Array.isArray(resp.machines) ? resp.machines : (resp.machines?[resp.machines]:[]);
+      const executions = [];
+
+      machines.forEach(machine=>{
+        const machineName = machine.machineName || machine.machineInfo?.hostName || machine.hostName || 'Machine';
+        const browserName = machine.browserName || machine.browserInfo?.name || '';
+        const browserVersion = machine.browserVersion || machine.browserInfo?.version || '';
+        const platformName = machine.platformName || machine.platform || '';
+        const runs = Array.isArray(machine.results)?machine.results:(machine.results?[machine.results]:[]);
+
+        runs.forEach(run=>{
+          const rootChildren = Array.isArray(run.children)?run.children:(run.children?[run.children]:[]);
+          if(!rootChildren.length) return;
+
+          const title = resp.suiteName || run.title || 'Execution';
+          const executedOn = resp.executedOn || run.executedOn || '';
+          const duration   = resp.duration || run.executionDurationInHourMinSecFormat || '';
+          const envName    = machine.executionEnv || run.environmentName || '';
+
+          // Extract projectEnvironmentVariables to get actual platform name
+          let actualPlatformName = platformName;
+          let peVariableSetName = '';
+          let projectEnvVars = {};
+          
+          // Try to get projectEnvironmentVariables from the run data
+          if(rootChildren[0]?.selectedSystem?.runLevelExecutionDataSets?.[0]){
+            const execDataSet = rootChildren[0].selectedSystem.runLevelExecutionDataSets[0];
+            projectEnvVars = execDataSet.projectEnvironmentVariables || {};
+            
+            // Get the PE variable set name that was actually used
+            peVariableSetName = execDataSet.peVariableSetName || '';
+            
+            // Look for platform name in various fields
+            actualPlatformName = projectEnvVars.PlatformName || 
+                                projectEnvVars.platformName || 
+                                projectEnvVars.platformNameAOS || 
+                                projectEnvVars.platformNameiOS ||
+                                projectEnvVars.executionView ||
+                                projectEnvVars.platformLambda ||
+                                platformName ||
+                                envName;
+          }
+
+          const modules = [];
+          function collectModules(node, parentIsRoot = false){
+            if(!node) return;
+            const nodeType = (node.type||'').toString().toLowerCase();
+            
+            // Skip the root module that contains everything
+            if(nodeType === 'module' && parentIsRoot){
+              // Don't add this module, just process its children
+              if(Array.isArray(node.children)){
+                node.children.forEach(child => collectModules(child, false));
+              }
+              return;
+            }
+            
+            if(nodeType === 'module'){
+              const modName = node.title || node.name || 'Module';
+              const modStart = node.executedOn || '';
+              const scripts = [];
+              function collectScripts(n){
+                if(!n) return;
+                if((n.type||'').toString().toLowerCase()==='script'){
+                  scripts.push(convertScript(n));
+                }
+                if(Array.isArray(n.children)){
+                  n.children.forEach(collectScripts);
+                }
+              }
+              if(Array.isArray(node.children)){
+                node.children.forEach(collectScripts);
+              }
+              modules.push({moduleName:modName,start:modStart,testcases:scripts});
+            }
+            if(Array.isArray(node.children)){
+              node.children.forEach(child => collectModules(child, false));
+            }
+          }
+          rootChildren.forEach(node => collectModules(node, true));
+
+          const counts={PASS:0,FAIL:0,WARNING:0,SKIPPED:0,TERMINATED:0};
+          modules.forEach(m=>{
+            (m.testcases||[]).forEach(tc=>{
+              const s=(tc.status||'').toUpperCase();
+              if(s.startsWith('PASS')) counts.PASS++;
+              else if(s.startsWith('FAIL')) counts.FAIL++;
+              else if(s.includes('WARN')) counts.WARNING++;
+              else if(s.includes('SKIP')) counts.SKIPPED++;
+              else if(s.includes('TERMINAT')) counts.TERMINATED++;
+            });
+          });
+
+          executions.push({
+            title,
+            machineName,
+            browser:browserName,
+            version:browserVersion,
+            executedOn,
+            duration,
+            envName,
+            platformName: actualPlatformName,
+            peVariableSetName: peVariableSetName,  // Single name from actual execution
+            testDataSetNames: resp.testDataSetNames || [],
+            globalVariableSetNames: resp.globalVariableSetNames || [],
+            modules,
+            counts
+          });
+        });
+      });
+
+      return executions;
+    }
+
+
+
+        // ===== UI STATE =====
+        let reportData = null;
+        let currentExecutionIndex = 0;
+        let normalizedExecutions = [];
+
+// Modal handlers
+        document.getElementById('openJsonBtn').addEventListener('click', () => {
+            document.getElementById('jsonModal').classList.add('active');
+        });
+
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('jsonModal').classList.remove('active');
+        });
+
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            document.getElementById('jsonModal').classList.remove('active');
+        });
+
+        document.getElementById('loadJsonBtn').addEventListener('click', () => {
+            const jsonText = document.getElementById('jsonInput').value.trim();
+            if (!jsonText) {
+                alert('Please paste JSON data first!');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(jsonText);
+                document.getElementById('jsonModal').classList.remove('active');
+                document.getElementById('jsonInput').value = '';
+                loadData(data);
+            } catch (error) {
+                alert('Invalid JSON: ' + error.message);
+            }
+        });
+
+        // Load data function
+        function loadData(data) {
+            document.getElementById('loadingOverlay').classList.add('active');
+            
+            setTimeout(() => {
+                try {
+                    reportData = data.responseObject || data;
+                    
+                    // Use the normalizeInput function from working template
+                    normalizedExecutions = normalizeInput(data);
+                    
+                    console.log('Normalized executions:', normalizedExecutions);
+                    
+                    renderReport();
+                    document.getElementById('loadingOverlay').classList.remove('active');
+                } catch (error) {
+                    console.error('Error rendering report:', error);
+                    alert('Error loading report: ' + error.message);
+                    document.getElementById('loadingOverlay').classList.remove('active');
+                }
+            }, 500);
+        }
+
+        // Make available globally
+        window.loadFromJSON = loadData;
+
+        function renderReport() {
+            if (!normalizedExecutions || normalizedExecutions.length === 0) {
+                alert('No execution data found');
+                return;
+            }
+
+            renderSidebar();
+            renderModules(0);
+        }
+
+        function renderSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.innerHTML = '';
+
+            normalizedExecutions.forEach((execution, index) => {
+                const card = document.createElement('div');
+                card.className = 'exec-card' + (index === currentExecutionIndex ? ' active' : '');
+                card.onclick = () => {
+                    currentExecutionIndex = index;
+                    renderReport();
+                };
+
+                const counts = execution.counts;
+                const total = counts.PASS + counts.FAIL + counts.WARNING + counts.SKIPPED + (counts.TERMINATED || 0);
+                const passPercent = total > 0 ? (counts.PASS / total) * 100 : 0;
+                const failPercent = total > 0 ? (counts.FAIL / total) * 100 : 0;
+                const warnPercent = total > 0 ? (counts.WARNING / total) * 100 : 0;
+                const skipPercent = total > 0 ? (counts.SKIPPED / total) * 100 : 0;
+
+                let offset = 0;
+                const segments = [];
+                
+                if (counts.PASS > 0) {
+                    segments.push(`<circle cx="60" cy="60" r="50" fill="none" stroke="#10B981" stroke-width="20" stroke-dasharray="${passPercent * 3.14} 314" stroke-dashoffset="${-offset}" />`);
+                    offset += passPercent * 3.14;
+                }
+                if (counts.FAIL > 0) {
+                    segments.push(`<circle cx="60" cy="60" r="50" fill="none" stroke="#EF4444" stroke-width="20" stroke-dasharray="${failPercent * 3.14} 314" stroke-dashoffset="${-offset}" />`);
+                    offset += failPercent * 3.14;
+                }
+                if (counts.WARNING > 0) {
+                    segments.push(`<circle cx="60" cy="60" r="50" fill="none" stroke="#F59E0B" stroke-width="20" stroke-dasharray="${warnPercent * 3.14} 314" stroke-dashoffset="${-offset}" />`);
+                    offset += warnPercent * 3.14;
+                }
+                if (counts.SKIPPED > 0) {
+                    segments.push(`<circle cx="60" cy="60" r="50" fill="none" stroke="#9CA3AF" stroke-width="20" stroke-dasharray="${skipPercent * 3.14} 314" stroke-dashoffset="${-offset}" />`);
+                }
+
+                card.innerHTML = `
+                    <div class="exec-card-header">
+                        <div class="browser-icon">🌐</div>
+                        <div class="exec-card-title">${execution.title || 'Test_Suite'}</div>
+                    </div>
+                    <div class="exec-card-details">
+                        ${execution.machineName || 'Machine'} | ${execution.platformName || 'OS'} | ${execution.browser || 'Browser'}
+                    </div>
+                    <div class="pie-container">
+                        <svg class="pie-chart" viewBox="0 0 120 120">
+                            ${segments.join('')}
+                        </svg>
+                        <div class="pie-center">
+                            <div class="pie-center-number">${total}</div>
+                            <div class="pie-center-label">Scripts</div>
+                        </div>
+                    </div>
+                    <div class="stats-list">
+                        <div class="stat-item">
+                            <span class="stat-label"><span class="stat-dot pass"></span> Passed</span>
+                            <span class="stat-value">${counts.PASS} (${passPercent.toFixed(0)}%)</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label"><span class="stat-dot fail"></span> Failed</span>
+                            <span class="stat-value">${counts.FAIL} (${failPercent.toFixed(0)}%)</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label"><span class="stat-dot warn"></span> Warning</span>
+                            <span class="stat-value">${counts.WARNING} (${warnPercent.toFixed(0)}%)</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label"><span class="stat-dot skip"></span> Skipped</span>
+                            <span class="stat-value">${counts.SKIPPED} (${skipPercent.toFixed(0)}%)</span>
+                        </div>
+                    </div>
+                    <div class="exec-footer">
+                        Platform: ${execution.platformName || 'Unknown'}<br>
+                        Executed On: ${fmtDateTime(execution.executedOn)}
+                    </div>
+                `;
+
+                sidebar.appendChild(card);
+            });
+        }
+
+        function renderModules(executionIndex) {
+            const execution = normalizedExecutions[executionIndex];
+            if (!execution || !execution.modules) return;
+
+            const modules = execution.modules;
+            document.getElementById('moduleCount').textContent = modules.length;
+
+            const modulesContent = document.getElementById('modulesContent');
+            modulesContent.innerHTML = '';
+
+            modules.forEach(module => {
+                const moduleDiv = document.createElement('div');
+                moduleDiv.className = 'module';
+
+                const testcases = module.testcases || [];
+                const totalScripts = testcases.length;
+                const passedScripts = testcases.filter(tc => {
+                    const status = (tc.status || '').toUpperCase();
+                    return status === 'PASS' || status === 'PASSED';
+                }).length;
+
+                moduleDiv.innerHTML = `
+                    <div class="module-header">
+                        <div class="module-name">${module.moduleName || 'Module'}</div>
+                        <div class="module-stats">${totalScripts} Scripts · ${passedScripts} passed</div>
+                    </div>
+                    <div class="filter-pills">
+                        <span class="filter-pill all">All</span>
+                        <span class="filter-pill pass">Pass</span>
+                        <span class="filter-pill fail">Fail</span>
+                        <span class="filter-pill warn">Warn</span>
+                        <span class="filter-pill skip">Skip</span>
+                    </div>
+                    <div class="testcases-list">
+                        ${testcases.map(tc => {
+                            const status = (tc.status || 'PASS').toUpperCase();
+                            const statusClass = status === 'PASS' || status === 'PASSED' ? 'passed' : 
+                                               status === 'FAIL' || status === 'FAILED' ? 'failed' : 
+                                               status.includes('WARN') ? 'warning' : 'passed';
+                            const statusText = status === 'PASS' || status === 'PASSED' ? 'Passed' : 
+                                             status === 'FAIL' || status === 'FAILED' ? 'Failed' : 
+                                             status.includes('WARN') ? 'Warning' : status;
+                            
+                            const preSteps = tc.preConditionSteps || [];
+                            const mainSteps = tc.steps || [];
+                            const postSteps = tc.postConditionSteps || [];
+                            const totalSteps = preSteps.length + mainSteps.length + postSteps.length;
+                            
+                            return `
+                                <div class="testcase">
+                                    <div class="testcase-header">
+                                        <div class="testcase-name">${tc.name || 'Test Case'}</div>
+                                        <div class="testcase-status ${statusClass}">${statusText}</div>
+                                    </div>
+                                    <div class="testcase-details">
+                                        ${fmtDateTime(tc.start)} · ${totalSteps} steps
+                                    </div>
+                                    
+                                    ${preSteps.length > 0 ? `
+                                        <div class="subtestcase">
+                                            <div style="font-size: 12px; font-weight: 600; color: #6B7280; margin-bottom: 6px;">Preconditions</div>
+                                            ${preSteps.map((step, idx) => {
+                                                const stepStatus = (step.status || 'WARNING').toUpperCase();
+                                                const stepStatusClass = stepStatus === 'PASS' ? 'passed' : 
+                                                                       stepStatus === 'FAIL' ? 'failed' : 'warning';
+                                                const stepStatusText = stepStatus === 'PASS' ? 'Passed' : 
+                                                                     stepStatus === 'FAIL' ? 'Failed' : 'Warning';
+                                                const childSteps = (step.children || []).length;
+                                                
+                                                return `
+                                                    <div class="testcase" style="margin-bottom: 6px; padding: 8px;">
+                                                        <div class="testcase-header">
+                                                            <div class="testcase-name">${step.name || `Precondition ${idx + 1}`}</div>
+                                                            <div class="testcase-status ${stepStatusClass}">${stepStatusText}</div>
+                                                        </div>
+                                                        <div class="testcase-details">${fmtTS(step.timestamp)} · ${childSteps} sub-steps</div>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                    ` : ''}
+                                    
+                                    ${mainSteps.length > 0 ? `
+                                        <div class="subtestcase">
+                                            ${mainSteps.slice(0, 5).map((step, idx) => {
+                                                const stepStatus = (step.status || tc.status || 'PASS').toUpperCase();
+                                                const stepStatusClass = stepStatus === 'PASS' ? 'passed' : 
+                                                                       stepStatus === 'FAIL' ? 'failed' : 'warning';
+                                                const stepStatusText = stepStatus === 'PASS' ? 'Passed' : 
+                                                                     stepStatus === 'FAIL' ? 'Failed' : 'Warning';
+                                                const childSteps = (step.children || []).length;
+                                                
+                                                return `
+                                                    <div class="testcase" style="margin-bottom: 6px; padding: 8px;">
+                                                        <div class="testcase-header">
+                                                            <div class="testcase-name">${step.name || step.nlp || `Step ${idx + 1}`}</div>
+                                                            <div class="testcase-status ${stepStatusClass}">${stepStatusText}</div>
+                                                        </div>
+                                                        <div class="testcase-details">${fmtTS(step.timestamp)} ${childSteps > 0 ? `· ${childSteps} elements` : ''}</div>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                            ${mainSteps.length > 5 ? `<div style="font-size: 11px; color: #6B7280; margin-top: 6px;">... and ${mainSteps.length - 5} more steps</div>` : ''}
+                                        </div>
+                                    ` : ''}
+                                    
+                                    ${postSteps.length > 0 ? `
+                                        <div class="subtestcase">
+                                            <div style="font-size: 12px; font-weight: 600; color: #6B7280; margin-bottom: 6px;">Postconditions</div>
+                                            ${postSteps.map((step, idx) => {
+                                                const stepStatus = (step.status || tc.status || 'PASS').toUpperCase();
+                                                const stepStatusClass = stepStatus === 'PASS' ? 'passed' : 
+                                                                       stepStatus === 'FAIL' ? 'failed' : 'warning';
+                                                const stepStatusText = stepStatus === 'PASS' ? 'Passed' : 
+                                                                     stepStatus === 'FAIL' ? 'Failed' : 'Warning';
+                                                const childSteps = (step.children || []).length;
+                                                
+                                                return `
+                                                    <div class="testcase" style="margin-bottom: 6px; padding: 8px;">
+                                                        <div class="testcase-header">
+                                                            <div class="testcase-name">${step.name || `Postcondition ${idx + 1}`}</div>
+                                                            <div class="testcase-status ${stepStatusClass}">${stepStatusText}</div>
+                                                        </div>
+                                                        <div class="testcase-details">${fmtTS(step.timestamp)} · ${childSteps} sub-steps</div>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+
+                modulesContent.appendChild(moduleDiv);
+            });
+        }
+
+        // Generate Report button (API call)
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const license = document.getElementById('licenseInput').value.trim();
+            const exec = document.getElementById('execInput').value.trim();
+            
+            if (!license || !exec) {
+                alert('Please enter License ID and Execution ID');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loadingOverlay').classList.add('active');
+
+            try {
+                const apiUrl = `https://app.v3.fireflink.com/reports/optimize/v1/internal/reports/execution/${exec}?licenseId=${license}`;
+                
+                console.log('Fetching from API:', apiUrl);
+                console.log('License ID:', license);
+                console.log('Execution ID:', exec);
+
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    mode: 'cors',
+                    credentials: 'omit'
+                });
+
+                console.log('Response Status:', response.status);
+                console.log('Response Headers:', [...response.headers.entries()]);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API Error Response:', errorText);
+                    throw new Error(`API returned ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('API Response Data:', data);
+
+                if (!data || (!data.responseObject && !data.machines)) {
+                    console.error('Invalid data structure:', data);
+                    throw new Error('Invalid response format from API');
+                }
+
+                // Load the data
+                loadData(data);
+
+            } catch (error) {
+                console.error('API Error:', error);
+                console.error('Error Stack:', error.stack);
+                document.getElementById('loadingOverlay').classList.remove('active');
+                
+                // Determine error type
+                let errorMsg = 'Failed to fetch data from API:\n\n';
+                
+                if (error.message.includes('CORS') || error.message.includes('NetworkError')) {
+                    errorMsg += '❌ CORS Policy Error\n\n';
+                    errorMsg += 'The browser blocked the request due to CORS policy.\n';
+                    errorMsg += 'This is a security feature that prevents web pages from making requests to different domains.\n\n';
+                    errorMsg += '✅ SOLUTION: Use the "Load from JSON" button instead!\n';
+                    errorMsg += '1. Open the API URL in a new tab:\n';
+                    errorMsg += `   https://app.v3.fireflink.com/reports/optimize/v1/internal/reports/execution/${exec}?licenseId=${license}\n`;
+                    errorMsg += '2. Copy the JSON response\n';
+                    errorMsg += '3. Click "Load from JSON" and paste it';
+                } else if (error.message.includes('404')) {
+                    errorMsg += '❌ Execution Not Found (404)\n\n';
+                    errorMsg += 'The Execution ID or License ID may be incorrect.\n';
+                    errorMsg += 'Please verify the IDs and try again.';
+                } else if (error.message.includes('401') || error.message.includes('403')) {
+                    errorMsg += '❌ Authentication Error\n\n';
+                    errorMsg += 'The API requires authentication.\n';
+                    errorMsg += 'Please use the "Load from JSON" button instead.';
+                } else {
+                    errorMsg += `❌ ${error.message}\n\n`;
+                    errorMsg += 'Please try using the "Load from JSON" button instead.';
+                }
+                
+                alert(errorMsg);
+            }
+        });
+
+        // Add Enter key support for inputs
+        document.getElementById('licenseInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('generateBtn').click();
+            }
+        });
+
+        document.getElementById('execInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('generateBtn').click();
+            }
+        });
+
+        // Download HTML button
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            if (!reportData) {
+                alert('Please load data first!');
+                return;
+            }
+
+            const reportName = document.getElementById('reportName').value.trim() || 'FireFlink_Report';
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${reportName}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // Export Excel button
+        document.getElementById('excelBtn').addEventListener('click', () => {
+            if (!reportData) {
+                alert('Please load data first!');
+                return;
+            }
+            alert('Excel export functionality coming soon!');
+        });
+    
+    </script>
+</body>
+</html>

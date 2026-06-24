@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>FireFlink Custom Report Templates</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 50%, #fae8ff 100%);
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #6424b8 0%, #8b4fd9 100%);
+      border-radius: 16px;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 40px rgba(100, 36, 184, 0.3);
+      margin-bottom: 40px;
+      animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: #6424b8;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-weight: 700;
+    }
+
+    .header-title {
+      color: white;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .generate-btn {
+      background: white;
+      color: #6424b8;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .generate-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      background: #f8f9fa;
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: rgba(255,255,255,0.5);
+      color: rgba(100, 36, 184, 0.5);
+    }
+
+    /* Templates Grid */
+    .templates-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .templates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 30px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Template Card */
+    .template-card {
+      background: #f8f9fa;
+      border-radius: 16px;
+      border: 3px solid #e9ecef;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      animation: scaleIn 0.4s ease;
+      animation-fill-mode: backwards;
+      height: 320px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .template-card:nth-child(1) { animation-delay: 0.1s; }
+    .template-card:nth-child(2) { animation-delay: 0.2s; }
+    .template-card:nth-child(3) { animation-delay: 0.3s; }
+    .template-card:nth-child(4) { animation-delay: 0.4s; }
+    .template-card:nth-child(5) { animation-delay: 0.5s; }
+    .template-card:nth-child(6) { animation-delay: 0.6s; }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .template-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(100, 36, 184, 0.15);
+      border-color: #d8b4fe;
+    }
+
+    .template-card.selected {
+      border-color: #6424b8;
+      border-width: 4px;
+      box-shadow: 0 15px 40px rgba(100, 36, 184, 0.25);
+      transform: translateY(-5px);
+    }
+
+    .template-preview {
+      height: 200px;
+      background: linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: rgba(100, 36, 184, 0.2);
+      border-radius: 13px 13px 0 0;
+    }
+
+    .template-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #6424b8;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 2px solid #6424b8;
+    }
+
+    .checkmark {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #10b981;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      animation: checkPop 0.3s ease;
+      z-index: 10;
+    }
+
+    @keyframes checkPop {
+      0% {
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .template-card.selected .checkmark {
+      display: flex;
+    }
+
+    .template-content {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .template-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .template-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: 2px solid;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      background: white;
+    }
+
+    .btn-preview {
+      border-color: #6424b8;
+      color: #6424b8;
+    }
+
+    .btn-preview:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+    }
+
+    .btn-select {
+      border-color: #cbd5e1;
+      color: #64748b;
+    }
+
+    .btn-select:hover {
+      background: #f8f9fa;
+      border-color: #94a3b8;
+    }
+
+    .template-card.selected .btn-select {
+      background: #6424b8;
+      border-color: #6424b8;
+      color: white;
+    }
+
+    /* Right Sidebar Slider */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -25%;
+      width: 25%;
+      height: 100vh;
+      background: white;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.2);
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar.open {
+      right: 0;
+    }
+
+    .sidebar-header {
+      background: linear-gradient(135deg, #6424b8 0%, #8b4fd9 100%);
+      padding: 24px;
+      color: white;
+    }
+
+    .sidebar-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .sidebar-content {
+      flex: 1;
+      padding: 32px 24px;
+      overflow-y: auto;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #6424b8;
+      box-shadow: 0 0 0 3px rgba(100, 36, 184, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .sidebar-footer {
+      padding: 24px;
+      border-top: 2px solid #f1f5f9;
+      display: flex;
+      gap: 12px;
+    }
+
+    .sidebar-btn {
+      flex: 1;
+      padding: 14px 24px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .sidebar-btn-cancel {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .sidebar-btn-cancel:hover {
+      background: #e2e8f0;
+    }
+
+    .sidebar-btn-generate {
+      background: linear-gradient(135deg, #6424b8 0%, #8b4fd9 100%);
+      color: white;
+    }
+
+    .sidebar-btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(100, 36, 184, 0.3);
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Selected Badge */
+    .selected-badge {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: white;
+      padding: 16px 24px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 998;
+      transition: transform 0.4s ease;
+    }
+
+    .selected-badge.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .badge-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+
+    .badge-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 35%;
+        right: -35%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .templates-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-title {
+        font-size: 24px;
+      }
+
+      .sidebar {
+        width: 100%;
+        right: -100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">▶</div>
+      <h1 class="header-title">FireFlink Custom Report Templates</h1>
+    </div>
+    <button class="generate-btn" id="generateBtn" disabled>
+      <span>🚀</span>
+      Generate Report
+    </button>
+  </div>
+
+  <!-- Templates Grid -->
+  <div class="templates-container">
+    <div class="templates-grid" id="templatesGrid">
+      <!-- Templates will be inserted here by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Selected Badge -->
+  <div class="selected-badge" id="selectedBadge">
+    <div class="badge-icon">✓</div>
+    <div class="badge-text">Template selected!</div>
+  </div>
+
+  <!-- Right Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Generate Report</div>
+      <div class="sidebar-subtitle">Enter execution details to generate your report</div>
+    </div>
+    
+    <div class="sidebar-content">
+      <div class="form-group">
+        <label class="form-label" for="licenseId">License ID</label>
+        <input 
+          type="text" 
+          id="licenseId" 
+          class="form-input" 
+          placeholder="License ID"
+          value="LIC26859"
+        />
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label" for="executionId">Execution ID</label>
+        <input 
+          type="text" 
+          id="executionId" 
+          class="form-input" 
+          placeholder="Execution ID"
+          value="EXEC5127"
+        />
+      </div>
+    </div>
+    
+    <div class="sidebar-footer">
+      <button class="sidebar-btn sidebar-btn-cancel" onclick="closeSidebar()">
+        Cancel
+      </button>
+      <button class="sidebar-btn sidebar-btn-generate" onclick="generateReport()">
+        Generate
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Template configuration
+    const templates = [
+      {
+        id: 'template1',
+        name: 'Template 1',
+        file: 'FireFlink_Custom_Template_AutoLoad.html', // Updated to auto-loading version
+        preview: null
+      },
+      {
+        id: 'template2',
+        name: 'Template 2',
+        file: null,
+        preview: null
+      },
+      {
+        id: 'template3',
+        name: 'Template 3',
+        file: null,
+        preview: null
+      },
+      {
+        id: 'template4',
+        name: 'Template 4',
+        file: null,
+        preview: null
+      },
+      {
+        id: 'template5',
+        name: 'Template 5',
+        file: null,
+        preview: null
+      },
+      {
+        id: 'template6',
+        name: 'Template 6',
+        file: null,
+        preview: null
+      }
+    ];
+
+    let selectedTemplate = null;
+
+    // Render templates
+    function renderTemplates() {
+      const grid = document.getElementById('templatesGrid');
+      grid.innerHTML = templates.map((template) => `
+        <div class="template-card" data-template-id="${template.id}">
+          <div class="checkmark">✓</div>
+          <div class="template-preview">
+            <div class="template-badge">${template.name}</div>
+            📊
+          </div>
+          <div class="template-content">
+            <h2 class="template-title">FireFlink ${template.name}</h2>
+            <div class="template-buttons">
+              <button class="btn btn-preview" onclick="previewTemplate('${template.id}')">
+                Preview
+              </button>
+              <button class="btn btn-select" onclick="selectTemplate('${template.id}')">
+                Select
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Select/Deselect template
+    function selectTemplate(templateId) {
+      const template = templates.find(t => t.id === templateId);
+      
+      if (!template.file) {
+        alert('This template is not configured yet. Please add a template file.');
+        return;
+      }
+
+      const card = document.querySelector(`[data-template-id="${templateId}"]`);
+      const isSelected = card.classList.contains('selected');
+
+      if (isSelected) {
+        // Deselect
+        card.classList.remove('selected');
+        card.querySelector('.btn-select').textContent = 'Select';
+        selectedTemplate = null;
+        document.getElementById('generateBtn').disabled = true;
+      } else {
+        // Remove previous selection
+        document.querySelectorAll('.template-card').forEach(c => {
+          c.classList.remove('selected');
+          c.querySelector('.btn-select').textContent = 'Select';
+        });
+
+        // Select this card
+        card.classList.add('selected');
+        card.querySelector('.btn-select').textContent = 'Deselect';
+        selectedTemplate = template;
+        document.getElementById('generateBtn').disabled = false;
+
+        // Show badge
+        const badge = document.getElementById('selectedBadge');
+        badge.classList.add('visible');
+        setTimeout(() => {
+          badge.classList.remove('visible');
+        }, 2000);
+      }
+    }
+
+    // Preview template
+    function previewTemplate(templateId) {
+      const template = templates.find(t => t.id === templateId);
+      
+      if (!template.file) {
+        alert('This template is not configured yet. Please add a template file.');
+        return;
+      }
+
+      window.open(template.file, '_blank');
+    }
+
+    // Open sidebar
+    function openSidebar() {
+      if (!selectedTemplate) {
+        alert('Please select a template first.');
+        return;
+      }
+
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    // Close sidebar
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    // Generate report
+    function generateReport() {
+      const licenseId = document.getElementById('licenseId').value.trim();
+      const executionId = document.getElementById('executionId').value.trim();
+
+      if (!licenseId || !executionId) {
+        alert('Please enter both License ID and Execution ID.');
+        return;
+      }
+
+      if (!selectedTemplate) {
+        alert('Please select a template first.');
+        return;
+      }
+
+      // Navigate to template with query parameters
+      const url = `${selectedTemplate.file}?licenseId=${encodeURIComponent(licenseId)}&executionId=${encodeURIComponent(executionId)}`;
+      window.location.href = url;
+    }
+
+    // Generate button click
+    document.getElementById('generateBtn').addEventListener('click', openSidebar);
+
+    // Initialize
+    renderTemplates();
+
+    // Make functions global
+    window.selectTemplate = selectTemplate;
+    window.previewTemplate = previewTemplate;
+    window.closeSidebar = closeSidebar;
+    window.generateReport = generateReport;
+  </script>
+</body>
+</html>

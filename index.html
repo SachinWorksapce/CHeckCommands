@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>FireFlink Custom Report Templates</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f5e6ff 0%, #e6d5f0 50%, #d8c5e8 100%);
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* FireFlink Logo */
+    .fireflink-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: rgba(113, 52, 123, 0.95);
+      padding: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .fireflink-logo svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #71347B 0%, #8b4689 100%);
+      border-radius: 50px;
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 32px rgba(113, 52, 123, 0.3);
+      margin-bottom: 40px;
+      animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-title {
+      color: white;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .generate-btn {
+      background: white;
+      color: #71347B;
+      border: 2px solid white;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .generate-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      background: #f8f9fa;
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: rgba(255,255,255,0.7);
+      color: rgba(113, 52, 123, 0.5);
+    }
+
+    /* Main Container */
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      transition: all 0.4s ease;
+    }
+
+    /* Templates Grid */
+    .templates-container {
+      transition: opacity 0.3s ease;
+    }
+
+    .templates-container.hidden {
+      display: none;
+    }
+
+    .templates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 24px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Template Card */
+    .template-card {
+      background: #dcc8e3;
+      border-radius: 20px;
+      border: 4px solid #c4a8d4;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      animation: scaleIn 0.4s ease;
+      animation-fill-mode: backwards;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .template-card:nth-child(1) { animation-delay: 0.1s; }
+    .template-card:nth-child(2) { animation-delay: 0.2s; }
+    .template-card:nth-child(3) { animation-delay: 0.3s; }
+    .template-card:nth-child(4) { animation-delay: 0.4s; }
+    .template-card:nth-child(5) { animation-delay: 0.5s; }
+    .template-card:nth-child(6) { animation-delay: 0.6s; }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .template-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 32px rgba(113, 52, 123, 0.2);
+      border-color: #a888c8;
+    }
+
+    .template-card.selected {
+      border-color: #71347B;
+      border-width: 5px;
+      box-shadow: 0 12px 40px rgba(113, 52, 123, 0.35);
+      transform: translateY(-5px);
+      background: #d0b8dc;
+    }
+
+    .template-preview {
+      height: 200px;
+      background: linear-gradient(135deg, #e8d5f0 0%, #dcc8e3 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      color: rgba(113, 52, 123, 0.15);
+      border-radius: 16px 16px 0 0;
+    }
+
+    .template-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: white;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #71347B;
+      box-shadow: 0 4px 12px rgba(113, 52, 123, 0.2);
+      border: 2px solid #71347B;
+    }
+
+    .checkmark {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #4caf50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 22px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+      animation: checkPop 0.3s ease;
+      z-index: 10;
+    }
+
+    @keyframes checkPop {
+      0% {
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .template-card.selected .checkmark {
+      display: flex;
+    }
+
+    .template-content {
+      padding: 28px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .template-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #2d1b3d;
+      margin-bottom: 20px;
+    }
+
+    .template-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      background: white;
+    }
+
+    .btn-preview {
+      color: #71347B;
+      border-color: #71347B;
+    }
+
+    .btn-preview:hover {
+      background: #71347B;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(113, 52, 123, 0.3);
+    }
+
+    .btn-select {
+      background: #71347B;
+      color: white;
+      border-color: #71347B;
+    }
+
+    .btn-select:hover {
+      background: #5a2a63;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(113, 52, 123, 0.3);
+    }
+
+    /* Report Container - FULLSCREEN */
+    .report-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: white;
+      z-index: 1000;
+      display: none;
+    }
+
+    .report-container.visible {
+      display: block;
+    }
+
+    .report-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Floating Back Button - Top Left Corner */
+    /* Floating Back Button – Transparent, Edge Overlay */
+    .back-button {
+      position: fixed;
+      top: 8px;
+      left: 12px;
+
+      background: rgba(113, 52, 123, 0.15);
+      color: rgba(113, 52, 123, 0.6);
+
+      border: 1px solid rgba(113, 52, 123, 0.25);
+      padding: 8px 16px;
+      border-radius: 999px;
+
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+
+      cursor: pointer;
+      z-index: 5000;
+
+      backdrop-filter: blur(6px);
+      box-shadow: none;
+
+      opacity: 0.35;
+      transition:
+        opacity 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .back-button:hover {
+      opacity: 1;
+      background: linear-gradient(135deg, #71347B 0%, #8b4689 100%);
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(113, 52, 123, 0.45);
+      transform: translateY(-1px);
+    }
+
+    /* Floating Input Panel - Top Left Corner */
+    .floating-input-panel {
+      position: fixed;
+      top: 80px;
+      left: 20px;
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(113, 52, 123, 0.3);
+      z-index: 2000;
+      min-width: 320px;
+      display: none;
+      animation: slideInLeft 0.4s ease;
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .floating-input-panel.visible {
+      display: block;
+    }
+
+    .floating-input-panel.hide {
+      animation: slideOutLeft 0.3s ease forwards;
+    }
+
+    @keyframes slideOutLeft {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+    }
+
+    .floating-panel-header {
+      margin-bottom: 16px;
+    }
+
+    .floating-panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #71347B;
+      margin-bottom: 4px;
+    }
+
+    .floating-panel-subtitle {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .floating-form-group {
+      margin-bottom: 14px;
+    }
+
+    .floating-form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2d1b3d;
+      margin-bottom: 6px;
+    }
+
+    .floating-form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .floating-form-input:focus {
+      outline: none;
+      border-color: #71347B;
+      box-shadow: 0 0 0 3px rgba(113, 52, 123, 0.1);
+    }
+
+    .floating-panel-footer {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .floating-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .floating-btn-generate {
+      background: linear-gradient(135deg, #71347B 0%, #8b4689 100%);
+      color: white;
+    }
+
+    .floating-btn-generate:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(113, 52, 123, 0.3);
+    }
+
+    .floating-btn-generate:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .floating-btn-close {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .floating-btn-close:hover {
+      background: #cbd5e1;
+    }
+
+    /* Selected Badge */
+    .selected-badge {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #4caf50;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 6px 24px rgba(76, 175, 80, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+      pointer-events: none;
+      z-index: 1500;
+    }
+
+    .selected-badge.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .badge-icon {
+      width: 24px;
+      height: 24px;
+      background: white;
+      color: #4caf50;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    /* Success message */
+    .success-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      z-index: 3000;
+      display: none;
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .success-message.invisible {
+      display: block;
+    }
+
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      background: #4caf50;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      color: white;
+      font-size: 32px;
+    }
+
+    .success-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d1b3d;
+      margin-bottom: 8px;
+    }
+
+    .success-text {
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .templates-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-title {
+        font-size: 22px;
+      }
+
+      .floating-input-panel {
+        width: calc(100vw - 40px);
+        min-width: auto;
+      }
+    }
+  
+    /* Floating Back Button – Arrow Expand on Hover */
+    .back-button {
+      position: fixed;
+      top: 8px;
+      left: 10px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+
+      background: rgba(113, 52, 123, 0.12);
+      color: #71347B;
+      border: 1px solid rgba(113, 52, 123, 0.25);
+
+      padding: 8px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+
+      font-size: 11px;
+      font-weight: 600;
+      z-index: 5000;
+
+      backdrop-filter: blur(6px);
+      opacity: 0.4;
+      transition: all 0.3s ease;
+    }
+
+    .back-button .back-label {
+      max-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      opacity: 1;
+      padding: 8px 18px;
+      background: linear-gradient(135deg, #71347B 0%, #8b4689 100%);
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(113, 52, 123, 0.45);
+    }
+
+    .back-button:hover .back-label {
+      max-width: 160px;
+      opacity: 1;
+    }
+
+    .back-arrow {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+</style>
+</head>
+<body>
+  <!-- Header (only shown in template selection mode) -->
+  <div class="header" id="header">
+    <div class="header-left">
+      <div class="fireflink-logo">
+        <svg width="100%" height="100%" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.30815 2.44586C8.00129 2.63411 7.75562 2.75272 7.509 2.87602C6.58748 3.36737 5.7272 3.79754 4.80568 4.28795C4.74167 4.32431 4.68966 4.37863 4.6562 4.44421C4.62274 4.5098 4.60923 4.58376 4.61736 4.65693V23.2755C4.61736 23.5212 4.55624 23.7057 4.31057 23.7669C3.85464 23.9552 3.36009 24.0312 2.86866 23.9884C2.37722 23.9457 1.90328 23.7854 1.48672 23.5212C1.18046 23.3059 0.919692 23.0323 0.7194 22.716C0.519108 22.3997 0.383245 22.047 0.319539 21.6782C0.16509 20.682 0.102006 19.6737 0.131213 18.666C0.0700298 13.7497 0.00884184 8.77315 0.00884184 3.85683C-0.0391441 3.07511 0.108741 2.29379 0.439038 1.58366C0.717224 0.990161 1.19816 0.515478 1.79523 0.245067C2.39231 -0.0253429 3.06627 -0.0737303 3.69584 0.108649C4.56928 0.371444 5.39798 0.764987 6.15361 1.27586C6.82945 1.64484 7.50528 2.01287 8.11994 2.38186C8.18583 2.32255 8.24697 2.38373 8.30815 2.44586Z" fill="white"/>
+          <path d="M8.42587 21.3723V16.0258C8.42442 15.9536 8.44083 15.8821 8.47367 15.8177C8.50651 15.7533 8.55473 15.6981 8.61408 15.6569C10.7037 14.4887 12.7934 13.3215 14.8209 12.1543C15.3734 11.8465 15.9269 11.5397 16.5406 11.1707C16.1854 10.9425 15.8159 10.7372 15.4346 10.556C14.5131 10.0026 13.5917 9.51123 12.6701 8.95587C12.6247 8.92503 12.5711 8.90853 12.5162 8.90853C12.4613 8.90853 12.4077 8.92503 12.3623 8.95587C11.1951 9.6929 10.0891 10.3678 8.92098 11.1067C8.8598 11.1067 8.85982 11.1679 8.79769 11.1679V7.2352C8.79594 7.15413 8.81183 7.07365 8.84434 6.99937C8.87686 6.92508 8.92516 6.85876 8.9859 6.80504C10.0307 6.06801 11.0746 5.39311 12.0583 4.6542C12.1149 4.62396 12.1781 4.60815 12.2422 4.60815C12.3064 4.60815 12.3697 4.62396 12.4263 4.6542C13.8382 5.45335 15.3141 6.31368 16.7279 7.11188C17.7106 7.66442 18.6943 8.21789 19.7401 8.77042C20.488 9.15981 21.1072 9.75743 21.5228 10.4911C21.7846 10.9685 21.8898 11.5161 21.8236 12.0566C21.7574 12.5971 21.5232 13.1031 21.1539 13.5032C20.6682 14.0556 20.0849 14.5138 19.4332 14.8549C18.0213 15.654 16.6677 16.5144 15.2549 17.3126C13.473 18.3574 11.7524 19.3401 9.97051 20.3849C9.4095 20.7577 8.91722 21.0607 8.42587 21.3723Z" fill="white"/>
+        </svg>
+      </div>
+      <h1 class="header-title">FireFlink Custom Report Templates</h1>
+    </div>
+    <button class="generate-btn" id="generateBtn" disabled>
+      Generate Report
+    </button>
+  </div>
+
+  <div class="main-container" id="mainContainer">
+    <!-- Templates Grid -->
+    <div class="templates-container" id="templatesContainer">
+      <div class="templates-grid" id="templatesGrid">
+        <!-- Templates will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Report Container (fullscreen iframe) -->
+  <div class="report-container" id="reportContainer">
+    <iframe id="reportIframe" class="report-iframe"></iframe>
+  </div>
+
+  <!-- Floating Back Button (only shown in report mode) -->
+  <button class="back-button" id="backButton" onclick="backToTemplates()">
+    <span class="back-arrow"><<</span>
+    <span class="back-label">Back to Templates</span>
+  </button>
+
+  <!-- Floating Input Panel (only shown in report mode) -->
+  <div class="floating-input-panel" id="floatingPanel">
+    <div class="floating-panel-header">
+      <div class="floating-panel-title">Generate Report</div>
+      <div class="floating-panel-subtitle">Enter execution details</div>
+    </div>
+    
+    <div class="floating-panel-content">
+      <div class="floating-form-group">
+        <label class="floating-form-label" for="floatingLicenseId">License ID</label>
+        <input 
+          type="text" 
+          id="floatingLicenseId" 
+          class="floating-form-input" 
+          placeholder="e.g. LIC26859"
+          value="LIC26859"
+        />
+      </div>
+      
+      <div class="floating-form-group">
+        <label class="floating-form-label" for="floatingExecutionId">Execution ID</label>
+        <input 
+          type="text" 
+          id="floatingExecutionId" 
+          class="floating-form-input" 
+          placeholder="e.g. EXEC5127"
+          value="EXEC5127"
+        />
+      </div>
+    </div>
+    
+    <div class="floating-panel-footer">
+      <button class="floating-btn floating-btn-close" onclick="closeFloatingPanel()">
+        Close
+      </button>
+      <button class="floating-btn floating-btn-generate" id="floatingGenerateBtn" onclick="generateReportFromFloating()">
+        Generate
+      </button>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <div class="success-message" id="successMessage">
+    <div class="success-icon">✓</div>
+    <div class="success-title">Report Generated!</div>
+    <div class="success-text">Your report is loading...</div>
+  </div>
+
+  <!-- Selected Badge -->
+  <div class="selected-badge" id="selectedBadge">
+    <div class="badge-icon">✓</div>
+    <div class="badge-text">Template selected!</div>
+  </div>
+
+  <script>
+    const templates = [
+      {
+        id: 'template1',
+        name: 'FireFlink Custom Template 01',
+        file: 'FireFlink_Custom_Template_01.html',
+        preview: null
+      },
+      {
+        id: 'template2',
+        name: 'FireFlink Custom Template 02',
+        file: 'FireFlink_Custom_Template_02.html',
+        preview: null
+      },
+      {
+        id: 'template3',
+        name: 'FireFlink Custom Template 03',
+        file: 'FireFlink_Custom_Template_03.html',
+        preview: null
+      },
+      {
+        id: 'template4',
+        name: 'Template 4',
+        file: null,
+        preview: null
+      },
+      {
+        id: 'template5',
+        name: 'Template 5',
+        file: null,
+        preview: null
+      },
+      {
+        id: 'template6',
+        name: 'Template 6',
+        file: null,
+        preview: null
+      }
+    ];
+
+    let selectedTemplate = null;
+    let reportGenerated = false;
+
+    function renderTemplates() {
+      const grid = document.getElementById('templatesGrid');
+      grid.innerHTML = templates.map((template) => `
+        <div class="template-card" data-template-id="${template.id}">
+          <div class="checkmark">✓</div>
+          <div class="template-preview">
+            <div class="template-badge">${template.name}</div>
+            📊
+          </div>
+          <div class="template-content">
+            <h2 class="template-title">FireFlink ${template.name}</h2>
+            <div class="template-buttons">
+              <button class="btn btn-preview" onclick="previewTemplate('${template.id}')">
+                Preview
+              </button>
+              <button class="btn btn-select" onclick="selectTemplate('${template.id}')">
+                Select
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectTemplate(templateId) {
+      const template = templates.find(t => t.id === templateId);
+      
+      if (!template.file) {
+        alert('This template is not configured yet. Please add a template file.');
+        return;
+      }
+
+      const card = document.querySelector(`[data-template-id="${templateId}"]`);
+      const isSelected = card.classList.contains('selected');
+
+      if (isSelected) {
+        card.classList.remove('selected');
+        card.querySelector('.btn-select').textContent = 'Select';
+        selectedTemplate = null;
+        document.getElementById('generateBtn').disabled = true;
+      } else {
+        document.querySelectorAll('.template-card').forEach(c => {
+          c.classList.remove('selected');
+          c.querySelector('.btn-select').textContent = 'Select';
+        });
+
+        card.classList.add('selected');
+        card.querySelector('.btn-select').textContent = 'Deselect';
+        selectedTemplate = template;
+        document.getElementById('generateBtn').disabled = false;
+
+        const badge = document.getElementById('selectedBadge');
+        badge.classList.add('visible');
+        setTimeout(() => badge.classList.remove('visible'), 2000);
+      }
+    }
+
+    function previewTemplate(templateId) {
+      const template = templates.find(t => t.id === templateId);
+      
+      if (!template.file) {
+        alert('This template is not configured yet. Please add a template file.');
+        return;
+      }
+
+      window.open(template.file, '_blank');
+    }
+
+    function generateFromHeaderButton() {
+      if (!selectedTemplate) {
+        alert('Please select a template first.');
+        return;
+      }
+
+      // Hide header and templates
+      document.getElementById('header').style.display = 'none';
+      document.getElementById('templatesContainer').classList.add('hidden');
+      
+      // Show report container and floating elements
+      document.getElementById('reportContainer').classList.add('visible');
+      document.getElementById('backButton').style.display = 'flex';
+      document.getElementById('floatingPanel').classList.add('visible');
+      
+      // Load the template in iframe
+      document.getElementById('reportIframe').src = selectedTemplate.file;
+      
+      // Reset the report generated flag
+      reportGenerated = false;
+    }
+
+    function generateReportFromFloating() {
+      const licenseId = document.getElementById('floatingLicenseId').value.trim();
+      const executionId = document.getElementById('floatingExecutionId').value.trim();
+
+      if (!licenseId || !executionId) {
+        alert('Please enter both License ID and Execution ID.');
+        return;
+      }
+
+      // Send message to iframe using postMessage
+      const iframe = document.getElementById('reportIframe');
+      const message = {
+        type: 'FILL_AND_GENERATE',
+        licenseId: licenseId,
+        executionId: executionId
+      };
+      
+      iframe.contentWindow.postMessage(message, '*');
+      
+      // Show success message
+      const successMsg = document.getElementById('successMessage');
+      successMsg.classList.add('visible');
+      
+      // Hide floating panel with animation
+      const panel = document.getElementById('floatingPanel');
+      panel.classList.add('hide');
+      
+      setTimeout(() => {
+        panel.classList.remove('visible', 'hide');
+        successMsg.classList.remove('visible');
+        reportGenerated = true;
+      }, 2000);
+    }
+
+    function closeFloatingPanel() {
+      document.getElementById('floatingPanel').classList.remove('visible');
+    }
+
+    function backToTemplates() {
+      // Show header and templates
+      document.getElementById('header').style.display = 'flex';
+      document.getElementById('templatesContainer').classList.remove('hidden');
+      
+      // Hide report container and floating elements
+      document.getElementById('reportContainer').classList.remove('visible');
+      document.getElementById('backButton').style.display = 'none';
+      document.getElementById('floatingPanel').classList.remove('visible');
+      
+      // Clear iframe
+      document.getElementById('reportIframe').src = '';
+      
+      // Reset state for next use
+      reportGenerated = false;
+    }
+
+    // Event listeners
+    document.getElementById('generateBtn').addEventListener('click', generateFromHeaderButton);
+    
+    // Listen for messages from iframe (optional - for confirmation)
+    window.addEventListener('message', function(event) {
+      if (event.data.type === 'REPORT_GENERATED') {
+        console.log('Report generation confirmed from iframe');
+      }
+    });
+    
+    // Initialize
+    renderTemplates();
+
+    // Make functions globally accessible
+    window.selectTemplate = selectTemplate;
+    window.previewTemplate = previewTemplate;
+    window.generateReportFromFloating = generateReportFromFloating;
+    window.closeFloatingPanel = closeFloatingPanel;
+    window.backToTemplates = backToTemplates;
+  </script>
+</body>
+</html>
